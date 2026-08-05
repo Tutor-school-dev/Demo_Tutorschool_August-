@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@400;500;600;700;800&display=swap');
+
+@import '../src/index.css';
+
+@import "leaflet/dist/leaflet.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 210 29% 16%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 29% 16%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 29% 16%;
+    --primary: 152 100% 36%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 210 29% 16%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 210 29% 16%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 152 100% 36%;
+    --radius: 0.75rem;
+    --chart-1: 152 100% 36%;
+    --chart-2: 155 96% 74%;
+    --chart-3: 200 30% 12%;
+    --chart-4: 220 30% 6%;
+    --chart-5: 0 0% 60%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 210 29% 16%;
+    --sidebar-primary: 152 100% 36%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 210 29% 16%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 152 100% 36%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+}
+
+@layer utilities {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+.font-serif,
+h1,
+h2,
+h3 {
+  font-family: 'Fraunces', 'Times New Roman', serif;
+  font-optical-sizing: auto;
+}
+
+.grain {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+
+::selection {
+  background: #10b981;
+  color: #fff;
+}
+
+@keyframes scroll-logos {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll-logos {
+  animation: scroll-logos 25s linear infinite;
+  width: max-content;
+}
