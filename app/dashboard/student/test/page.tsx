@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import StudentNav from "@/components/dashboard/StudentNav";
 import { Card, CardContent } from "@/components/ui/card";
-import { FileText, Clock, ArrowRight } from "lucide-react";
+import { FileText, Clock, ArrowRight, Brain, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { demoTests } from "@/mock/demo-data";
 
@@ -17,6 +18,36 @@ export default function TestPage() {
           </h1>
           <p className="text-slate-500 mt-1">Track your progress through practice tests</p>
         </div>
+
+        {/* Cognitive Assessment CTA */}
+        <Card className="border-0 shadow-md mb-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 overflow-hidden">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
+                  <Brain className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-bold text-slate-900 text-lg">Cognitive Learning Fingerprint</h3>
+                    <Sparkles className="w-4 h-4 text-amber-500" />
+                  </div>
+                  <p className="text-sm text-slate-600">
+                    Discover how your brain learns best — 5 quick tasks, ~90 seconds
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    AI-powered assessment to find your perfect tutor match
+                  </p>
+                </div>
+              </div>
+              <Link href="/dashboard/student/test/assessment">
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full px-6 shadow-lg">
+                  Start Assessment <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Available test */}
         <Card className="border-0 shadow-sm mb-8 bg-gradient-to-r from-emerald-50 to-white">
