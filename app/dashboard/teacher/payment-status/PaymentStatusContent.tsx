@@ -6,7 +6,7 @@ import { CheckCircle, XCircle, RefreshCw, ArrowRight } from "lucide-react";
 import { Button } from "../../../../src/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../src/components/ui/card";
 import { usePaymentStatus } from "../../../../src/hooks/usePaymentStatus";
-import TeacherNavbar from "../../../../src/components/TeacherNavbar";
+import TeacherNav from "@/components/dashboard/TeacherNav";
 
 export default function PaymentStatusContent() {
   const router = useRouter();
@@ -195,7 +195,7 @@ export default function PaymentStatusContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <TeacherNavbar />
+      <TeacherNav />
       
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-center min-h-[60vh]">

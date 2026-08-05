@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDashboardStore } from "../../../../src/hooks/useDashboardStore";
-import TeacherNavbar from "../../../../src/components/TeacherNavbar";
+import TeacherNav from "@/components/dashboard/TeacherNav";
 import { Calendar, ChevronLeft, ChevronRight, Filter } from "lucide-react";
 import Cookies from "js-cookie";
 
@@ -99,7 +99,7 @@ export default function SessionsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <TeacherNavbar />
+      <TeacherNav />
       
       <div className="pt-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="py-8">

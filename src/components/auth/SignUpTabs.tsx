@@ -7,6 +7,7 @@ import TeacherSignup from "./TeacherSignup";
 import ParentLogin from "./ParentLogin";
 import ParentSignup from "./ParentSignup";
 import StudentAuth from "./StudentAuth";
+import TeacherAuthDemo from "./TeacherAuthDemo";
 
 interface SignUpTabsProps {
   mode?: string;
@@ -18,9 +19,14 @@ export default function SignUpTabs({ mode }: SignUpTabsProps) {
 
   const isParent = userType.toLowerCase() === 'parent' || userType.toLowerCase() === 'learner';
   const isStudent = userType.toLowerCase() === 'student';
+  const isTeacher = !isParent && !isStudent;
 
   if (isStudent) {
     return <StudentAuth />;
+  }
+
+  if (isTeacher) {
+    return <TeacherAuthDemo />;
   }
 
   return (

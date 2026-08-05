@@ -7,7 +7,7 @@ import { CheckCircle, Star, Zap, Check } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../../../../src/components/ui/card";
 import { Button } from "../../../../src/components/ui/button";
 import { useTeacherSubscription } from "../../../../src/hooks/useTeacherSubscription";
-import TeacherNavbar from "../../../../src/components/TeacherNavbar";
+import TeacherNav from "@/components/dashboard/TeacherNav";
 
 interface SubscriptionTier {
   id: number;
@@ -67,7 +67,7 @@ export default function TeacherSubscriptionContent() {
   if (subscriptionDetail && !subscriptionDetail.length) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <TeacherNavbar />
+        <TeacherNav />
         <div className="flex justify-center items-center h-screen">
           <div className="flex items-center space-x-2">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -80,7 +80,7 @@ export default function TeacherSubscriptionContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <TeacherNavbar />
+      <TeacherNav />
       
       <div className="container mx-auto mt-7 p-4">
         {/* Header */}

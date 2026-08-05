@@ -288,6 +288,23 @@ export const demoTests: TestResult[] = [
   { id: "t6", date: "2026-07-19", subject: "Mathematics", score: 82, totalQuestions: 20, correctAnswers: 16, timeTaken: 30 },
 ];
 
+export const teacherDimensions: LearningPattern[] = [
+  { subject: "Pacing", score: 78 },
+  { subject: "Scaffolding", score: 85 },
+  { subject: "Feedback Style", score: 72 },
+  { subject: "Explanation Style", score: 90 },
+  { subject: "Motivation Style", score: 82 },
+  { subject: "Adaptability", score: 68 },
+  { subject: "Psychological Safety", score: 88 },
+  { subject: "Patience", score: 75 },
+];
+
+export const demoTeacherTests: TestResult[] = [
+  { id: "tt1", date: "2026-08-04", subject: "Teaching Assessment", score: 82, totalQuestions: 7, correctAnswers: 6, timeTaken: 3 },
+  { id: "tt2", date: "2026-07-20", subject: "Student Engagement", score: 75, totalQuestions: 10, correctAnswers: 8, timeTaken: 5 },
+  { id: "tt3", date: "2026-07-10", subject: "Pedagogy Quiz", score: 88, totalQuestions: 12, correctAnswers: 11, timeTaken: 8 },
+];
+
 export function calculateFitScore(
   studentPattern: LearningPattern[],
   teacherPattern: LearningPattern[]
