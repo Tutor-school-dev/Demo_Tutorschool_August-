@@ -56,7 +56,14 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden lg:block">
+        <div className="hidden lg:flex items-center gap-3">
+          <Button
+            asChild
+            variant="ghost"
+            className="rounded-full text-slate-700 hover:text-emerald-600 px-5 h-11 font-semibold"
+          >
+            <a href="/auth">Login</a>
+          </Button>
           <Button
             asChild
             className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white px-6 h-11 font-semibold shadow-[0_6px_20px_-6px_rgba(5,150,105,0.6)]"
@@ -86,6 +93,13 @@ export default function Navbar() {
               {l.label}
             </a>
           ))}
+          <a
+            href="/auth"
+            onClick={() => setOpen(false)}
+            className="block text-center rounded-full border-2 border-emerald-600 text-emerald-600 py-3 font-semibold"
+          >
+            Login
+          </a>
           <a
             href="#match"
             onClick={() => setOpen(false)}
