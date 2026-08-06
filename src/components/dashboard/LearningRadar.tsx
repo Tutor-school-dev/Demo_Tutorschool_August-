@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   RadarChart,
   PolarGrid,
@@ -24,7 +25,34 @@ export default function LearningRadar({
   label = "Learning",
   size = "md",
 }: LearningRadarProps) {
+  const [mounted, setMounted] = useState(false);
   const heights = { sm: 200, md: 300, lg: 400 };
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div
+        className="w-full flex items-center justify-center bg-gray-50 rounded-lg"
+        style={{ height: heights[size] }}
+      >
+        <div className="animate-pulse text-gray-400">Loading chart...</div>
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div
+        className="w-full flex items-center justify-center bg-gray-50 rounded-lg"
+        style={{ height: heights[size] }}
+      >
+        <p className="text-gray-400 text-sm">No data available</p>
+      </div>
+    );
+  }
 
   return (
     <ResponsiveContainer width="100%" height={heights[size]}>

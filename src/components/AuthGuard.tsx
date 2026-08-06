@@ -23,7 +23,17 @@ export default function AuthGuard({ children, redirectAuthenticatedUsers = false
       
       if (jwtToken && model && redirectAuthenticatedUsers) {
         // User is logged in and we're on an auth page, redirect to dashboard
-        const dashboardPath = model.toLowerCase() === "parent" ? "/dashboard/parent" : "/dashboard/teacher";
+        const modelLower = model.toLowerCase();
+        let dashboardPath = "/dashboard/teacher"; // default fallback
+
+        if (modelLower === "student") {
+          dashboardPath = "/dashboard/student";
+        } else if (modelLower === "parent" || modelLower === "learner") {
+          dashboardPath = "/dashboard/parent";
+        } else if (modelLower === "teacher") {
+          dashboardPath = "/dashboard/teacher";
+        }
+
         console.log("AuthGuard redirecting to:", dashboardPath);
         router.push(dashboardPath);
       }
