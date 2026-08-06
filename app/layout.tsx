@@ -95,7 +95,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
-          enableSystem
+          enableSystem={false}
+          forcedTheme="light"
           disableTransitionOnChange
         >
           <GoogleAuthProvider>

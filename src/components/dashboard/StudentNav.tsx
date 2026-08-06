@@ -36,7 +36,7 @@ export default function StudentNav() {
       localStorage.removeItem("email");
       localStorage.removeItem("name");
     }
-    router.push("/");
+    router.push("/auth");
   };
 
   const links = [

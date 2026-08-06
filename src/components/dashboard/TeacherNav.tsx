@@ -36,7 +36,7 @@ export default function TeacherNav() {
       localStorage.removeItem("email");
       localStorage.removeItem("name");
     }
-    router.push("/");
+    router.push("/auth");
   };
 
   const links = [
