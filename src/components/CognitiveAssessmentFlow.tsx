@@ -250,7 +250,20 @@ export const CognitiveAssessmentFlow: React.FC = () => {
             <ResultsScreen
               results={results}
               onComplete={() => router.push("/dashboard/student")}
-              onFindTutor={() => setShowMatchResults(true)}
+              onFindTutor={() => {
+                // Save assessment completion flag
+                if (typeof window !== "undefined") {
+                  localStorage.setItem("assessmentCompleted", "true");
+                  localStorage.setItem(
+                    "cognitiveAssessmentResults",
+                    JSON.stringify({
+                      parameters: results,
+                      timestamp: Date.now(),
+                    })
+                  );
+                }
+                router.push("/dashboard/student/matching-results");
+              }}
             />
           )}
         </CardContent>

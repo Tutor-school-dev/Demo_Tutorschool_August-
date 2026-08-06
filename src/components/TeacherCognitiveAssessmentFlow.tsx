@@ -473,14 +473,14 @@ const PatienceScreen: React.FC<{ state: BaseTrackingState; setState: (s: BaseTra
 
 const ResultsScreen: React.FC<{ results: TeacherAssessmentResponse; onComplete: () => void }> = ({ results, onComplete }) => {
   const params = [
-    { key: "pacing", name: "Pacing", parameter: results.pacing },
-    { key: "scaffolding", name: "Scaffolding", parameter: results.scaffolding },
-    { key: "feedback_style", name: "Feedback Style", parameter: results.feedback_style },
-    { key: "explanation_style", name: "Explanation Style", parameter: results.explanation_style },
-    { key: "motivation_style", name: "Motivation Style", parameter: results.motivation_style },
-    { key: "adaptability", name: "Adaptability", parameter: results.adaptability },
+    { key: "pacing", name: "Pacing (Mastery-Based Instructional Progression)", parameter: results.pacing },
+    { key: "scaffolding", name: "Scaffolding (Contingent Support Calibration)", parameter: results.scaffolding },
+    { key: "feedback_style", name: "Feedback Style (Corrective/Elaborative/Encouraging)", parameter: results.feedback_style },
+    { key: "diagnostic_questioning", name: "Diagnostic Questioning", parameter: results.diagnostic_questioning },
+    { key: "motivation_style", name: "Motivation Style (Autonomy-Supportive vs Controlled)", parameter: results.motivation_style },
+    { key: "cognitive_flexibility", name: "Cognitive Flexibility", parameter: results.cognitive_flexibility },
     { key: "psychological_safety", name: "Psychological Safety", parameter: results.psychological_safety },
-    { key: "patience", name: "Patience", parameter: results.patience },
+    { key: "patience", name: "Patience & Error Tolerance", parameter: results.patience },
   ];
 
   const getBarWidth = (finalScore: number) => {

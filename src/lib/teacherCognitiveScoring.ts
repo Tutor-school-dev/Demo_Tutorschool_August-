@@ -55,9 +55,9 @@ export interface TeacherAssessmentResponse {
   pacing: TeacherCognitiveParameter;
   scaffolding: TeacherCognitiveParameter;
   feedback_style: TeacherCognitiveParameter;
-  explanation_style: TeacherCognitiveParameter;
+  diagnostic_questioning: TeacherCognitiveParameter; // was explanation_style
   motivation_style: TeacherCognitiveParameter;
-  adaptability: TeacherCognitiveParameter;
+  cognitive_flexibility: TeacherCognitiveParameter; // was adaptability
   psychological_safety: TeacherCognitiveParameter;
   patience: TeacherCognitiveParameter;
   final_summary: string;
@@ -101,12 +101,12 @@ function rawToParameter(rawScore: number, key: string): TeacherCognitiveParamete
       B4: "Effective multi-level feedback. Addresses task, process, and metacognitive dimensions.",
       B5: "Masterful feedback provider. Tailors feedback type to student needs and growth stage.",
     },
-    explanation_style: {
-      B1: "Explanations tend to be too abstract. Students may struggle to connect to concrete examples.",
-      B2: "Mostly concrete explanations but sometimes jumps to abstraction too quickly.",
-      B3: "Good balance of concrete and abstract. Transitions between levels appropriately.",
-      B4: "Strong explanatory skills. Moves fluidly between concrete examples and abstract principles.",
-      B5: "Exceptional explainer. Seamlessly bridges concrete and abstract, matching student readiness.",
+    diagnostic_questioning: {
+      B1: "Asks basic recall questions. Limited probing of student understanding depth.",
+      B2: "Uses some diagnostic questions but may not follow up on misconceptions.",
+      B3: "Good questioning skills. Probes understanding and identifies some knowledge gaps.",
+      B4: "Strong diagnostic questioner. Effectively uncovers misconceptions and adjusts instruction.",
+      B5: "Master diagnostician. Questions reveal precise understanding levels and guide next steps perfectly.",
     },
     motivation_style: {
       B1: "Limited motivational techniques. May rely heavily on external rewards or pressure.",
@@ -115,11 +115,11 @@ function rawToParameter(rawScore: number, key: string): TeacherCognitiveParamete
       B4: "Strong motivator. Effectively builds intrinsic motivation and maintains student engagement.",
       B5: "Inspiring motivator. Creates deep intrinsic drive and genuine love of learning in students.",
     },
-    adaptability: {
+    cognitive_flexibility: {
       B1: "Rigid teaching approach. Tends to stick to planned methods regardless of student response.",
       B2: "Some flexibility but changes are limited. May struggle when plan fails.",
       B3: "Moderately adaptive. Can shift strategies when needed but may take time to adjust.",
-      B4: "Highly adaptive teacher. Quickly recognizes when to change approach and does so effectively.",
+      B4: "Highly flexible teacher. Quickly recognizes when to change approach and does so effectively.",
       B5: "Exceptionally flexible. Seamlessly pivots strategies in real-time based on student signals.",
     },
     psychological_safety: {
@@ -184,18 +184,18 @@ export function computeTeacherCognitiveScores(payload: TeacherAssessmentPayload)
   const pacing = rawToParameter(pacingRaw, "pacing");
   const scaffolding = rawToParameter(scaffoldingRaw, "scaffolding");
   const feedback_style = rawToParameter(feedbackRaw, "feedback_style");
-  const explanation_style = rawToParameter(explanationRaw, "explanation_style");
+  const diagnostic_questioning = rawToParameter(explanationRaw, "diagnostic_questioning");
   const motivation_style = rawToParameter(motivationRaw, "motivation_style");
-  const adaptability = rawToParameter(adaptabilityRaw, "adaptability");
+  const cognitive_flexibility = rawToParameter(adaptabilityRaw, "cognitive_flexibility");
   const psychological_safety = rawToParameter(psySafetyRaw, "psychological_safety");
   const patience = rawToParameter(patienceRaw, "patience");
 
-  const params = [pacing, scaffolding, feedback_style, explanation_style, adaptability, patience];
+  const params = [pacing, scaffolding, feedback_style, diagnostic_questioning, cognitive_flexibility, patience];
   const avgScore = params.reduce((sum, p) => sum + p.final_score, 0) / params.length;
 
   let summary: string;
   if (avgScore >= 70) {
-    summary = "You demonstrate strong teaching competencies across multiple dimensions. Your approach combines effective pacing, solid scaffolding, and patient engagement. Students likely feel supported and motivated in your classes. Consider challenging yourself with more diverse learner profiles to further refine your adaptability.";
+    summary = "You demonstrate strong teaching competencies across multiple dimensions. Your approach combines effective pacing, solid scaffolding, and patient engagement. Students likely feel supported and motivated in your classes. Consider challenging yourself with more diverse learner profiles to further refine your cognitive flexibility.";
   } else if (avgScore >= 50) {
     summary = "You show developing teaching skills with clear strengths in several areas. Your profile suggests a teacher who is growing and refining their approach. Focused attention on your lower-scoring dimensions will help you become more effective with a wider range of students.";
   } else {
@@ -206,9 +206,9 @@ export function computeTeacherCognitiveScores(payload: TeacherAssessmentPayload)
     pacing,
     scaffolding,
     feedback_style,
-    explanation_style,
+    diagnostic_questioning,
     motivation_style,
-    adaptability,
+    cognitive_flexibility,
     psychological_safety,
     patience,
     final_summary: summary,

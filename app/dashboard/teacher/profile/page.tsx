@@ -124,7 +124,7 @@ export default function TeacherProfilePage() {
             <Card className="border-0 shadow-sm">
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold text-slate-900 mb-4 font-serif">Enrolled Students</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {demoStudents.map((student) => (
                     <div key={student.id} className="p-4 bg-gray-50 rounded-lg hover:bg-white hover:shadow-sm transition-all">
                       <div className="flex items-center gap-3 mb-3">
@@ -136,8 +136,8 @@ export default function TeacherProfilePage() {
                           <p className="text-xs text-slate-500">{student.grade} &middot; {student.board}</p>
                         </div>
                       </div>
-                      <div className="h-32">
-                        <LearningRadar data={student.learningPattern} color="#6366f1" />
+                      <div className="h-40 mb-2">
+                        <LearningRadar data={student.learningPattern} color="#6366f1" size="sm" />
                       </div>
                       <div className="flex justify-between mt-2 text-xs text-slate-500">
                         <span>{student.sessionsCompleted} sessions</span>

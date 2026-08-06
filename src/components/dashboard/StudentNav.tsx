@@ -39,11 +39,22 @@ export default function StudentNav() {
     router.push("/auth");
   };
 
+  const handleFindTutor = () => {
+    const assessmentCompleted =
+      typeof window !== "undefined" ? localStorage.getItem("assessmentCompleted") : null;
+
+    if (assessmentCompleted) {
+      router.push("/dashboard/student/matching-results");
+    } else {
+      router.push("/dashboard/student/test/assessment");
+    }
+  };
+
   const links = [
     { href: "/dashboard/student", label: "Dashboard", icon: LayoutDashboard },
     { href: "/dashboard/student/test", label: "Tests", icon: FileText },
     { href: "/dashboard/student/profile", label: "Profile", icon: UserCircle },
-    { href: "/matching", label: "Find Tutor", icon: Zap },
+    { href: "#", label: "Find Tutor", icon: Zap, onClick: handleFindTutor },
   ];
 
   return (
@@ -67,8 +78,8 @@ export default function StudentNav() {
               const isActive = pathname === link.href;
               return (
                 <button
-                  key={link.href}
-                  onClick={() => router.push(link.href)}
+                  key={link.label}
+                  onClick={() => (link.onClick ? link.onClick() : router.push(link.href))}
                   className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isActive
                       ? "bg-emerald-50 text-emerald-700"
@@ -120,8 +131,8 @@ export default function StudentNav() {
             const isActive = pathname === link.href;
             return (
               <button
-                key={link.href}
-                onClick={() => router.push(link.href)}
+                key={link.label}
+                onClick={() => (link.onClick ? link.onClick() : router.push(link.href))}
                 className={`flex flex-col items-center py-1.5 px-2 rounded-lg text-xs ${
                   isActive ? "text-emerald-600" : "text-gray-500"
                 }`}
