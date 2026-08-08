@@ -136,10 +136,10 @@ export default function TeacherProfilePage() {
                           <p className="text-xs text-slate-500">{student.grade} &middot; {student.board}</p>
                         </div>
                       </div>
-                      <div className="h-40 mb-2">
+                      <div className="h-48 mb-4">
                         <LearningRadar data={student.learningPattern} color="#6366f1" size="sm" />
                       </div>
-                      <div className="flex justify-between mt-2 text-xs text-slate-500">
+                      <div className="flex justify-between text-xs text-slate-500">
                         <span>{student.sessionsCompleted} sessions</span>
                         <span>Avg: {student.averageScore}%</span>
                         <span className="text-emerald-600 font-medium">{student.streak} day streak</span>

@@ -12,6 +12,27 @@ import {
 } from "recharts";
 import { LearningPattern } from "@/mock/demo-data";
 
+const SHORT_LABELS: Record<string, string> = {
+  "Concept Formation & Abstraction Ability": "Concept Formation",
+  "Reasoning Strategy & Transfer Ability": "Reasoning & Transfer",
+  "Working Memory & Retention Stability": "Working Memory",
+  "Divergent Thinking": "Divergent Thinking",
+  "Cognitive Flexibility & Logical Reasoning": "Logical Reasoning",
+  "Expression & Explanation Quality": "Expression Quality",
+  "Pacing (Mastery-Based Instructional Progression)": "Pacing",
+  "Scaffolding (Contingent Support Calibration)": "Scaffolding",
+  "Feedback Style (Corrective/Elaborative/Encouraging)": "Feedback Style",
+  "Diagnostic Questioning": "Diagnostic Quest.",
+  "Motivation Style (Autonomy-Supportive vs Controlled)": "Motivation Style",
+  "Cognitive Flexibility": "Cog. Flexibility",
+  "Psychological Safety": "Psych. Safety",
+  "Patience & Error Tolerance": "Patience",
+};
+
+function shortenLabel(label: string): string {
+  return SHORT_LABELS[label] || label;
+}
+
 interface LearningRadarProps {
   data: LearningPattern[];
   color?: string;
@@ -60,6 +81,7 @@ export default function LearningRadar({
         <PolarGrid stroke="#e2e8f0" />
         <PolarAngleAxis
           dataKey="subject"
+          tickFormatter={shortenLabel}
           tick={{ fontSize: size === "sm" ? 9 : 11, fill: "#64748b" }}
         />
         <PolarRadiusAxis
