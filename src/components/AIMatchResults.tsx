@@ -1,30 +1,93 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Brain, X, Star, CheckCircle, Sparkles } from "lucide-react";
+import { Brain, X, Star, CheckCircle, Sparkles, Loader2 } from "lucide-react";
 import { demoTeachers } from "@/mock/demo-data";
+import { matchingAPI, type MatchResultAPI } from "@/lib/api";
 
 interface AIMatchResultsProps {
   onClose: () => void;
 }
 
-const matchReasons = [
-  "Strong alignment with your working memory profile and processing speed. This tutor's structured, step-by-step approach matches your learning style.",
-  "Excellent fit for your exploratory nature. This tutor encourages open-ended investigation and creative problem-solving.",
-  "Great match for building confidence. This tutor specializes in scaffolded challenges that grow with the learner.",
-  "Compatible with your precision-focused learning style. This tutor emphasizes accuracy and systematic approaches.",
-];
+const C_MAX = 5.5;
+
+function generateInsight(breakdown: Record<string, { contribution: number; inverted: boolean }>): string {
+  const sorted = Object.entries(breakdown).sort((a, b) => b[1].contribution - a[1].contribution);
+  const top = sorted[0];
+  if (!top) return "Good overall compatibility based on cognitive profile analysis.";
+
+  const labels: Record<string, string> = {
+    "S1×T1": "attention stability and pacing alignment",
+    "S1×T8": "attention pattern and patience",
+    "S2×T2": "working memory and scaffolding approach",
+    "S3×T3": "feedback sensitivity and teaching style",
+    "S4×T5": "motivation profile and questioning technique",
+    "S5×T4": "abstraction ability and explanation style",
+    "S6×T6": "developmental stage and adaptability",
+    "S7×T7": "persistence and psychological safety",
+  };
+
+  return `Strong alignment in ${labels[top[0]] || "cognitive profiles"}. This tutor's teaching approach is well-suited to your learning pattern.`;
+}
 
 const AIMatchResults: React.FC<AIMatchResultsProps> = ({ onClose }) => {
-  const rankedTeachers = demoTeachers
-    .map((teacher, idx) => ({
-      teacher,
-      score: [92, 87, 81, 76][idx] || 70,
-      reasoning: matchReasons[idx] || "Good overall compatibility based on cognitive profile analysis.",
-    }))
-    .sort((a, b) => b.score - a.score);
+  const [backendMatches, setBackendMatches] = useState<MatchResultAPI[] | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchMatches() {
+      try {
+        const res = await matchingAPI.compute(4);
+        if (res.data.matches.length > 0) {
+          setBackendMatches(res.data.matches);
+        }
+      } catch {
+        // Fall back to demo data
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchMatches();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-3" />
+          <p className="text-gray-600">Computing matches from your cognitive profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const rankedTeachers = backendMatches
+    ? backendMatches.map((match, idx) => ({
+        teacher: {
+          id: match.teacher_id,
+          name: match.teacher_name,
+          avatar: match.teacher_name.split(" ").map(w => w[0]).join("").slice(0, 2),
+          subjects: [] as string[],
+          experience: "",
+          teachingMode: "Both",
+          rating: 4.8,
+          totalStudents: 0,
+        },
+        score: Math.round((match.compatibility_score / C_MAX) * 100),
+        reasoning: generateInsight(match.breakdown),
+      }))
+    : demoTeachers.map((teacher, idx) => ({
+        teacher,
+        score: [92, 87, 81, 76][idx] || 70,
+        reasoning: [
+          "Strong alignment with your working memory profile and processing speed. This tutor's structured, step-by-step approach matches your learning style.",
+          "Excellent fit for your exploratory nature. This tutor encourages open-ended investigation and creative problem-solving.",
+          "Great match for building confidence. This tutor specializes in scaffolded challenges that grow with the learner.",
+          "Compatible with your precision-focused learning style. This tutor emphasizes accuracy and systematic approaches.",
+        ][idx] || "Good overall compatibility based on cognitive profile analysis.",
+      }));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
@@ -38,7 +101,11 @@ const AIMatchResults: React.FC<AIMatchResultsProps> = ({ onClose }) => {
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-1">AI-Powered Matches</h2>
-                  <p className="text-gray-600">Tutors matched to your cognitive learning profile</p>
+                  <p className="text-gray-600">
+                    {backendMatches
+                      ? "Tutors matched using bilinear compatibility model (C = Sᵀ · M₀ · T)"
+                      : "Tutors matched to your cognitive learning profile"}
+                  </p>
                 </div>
               </div>
               <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full h-10 w-10">
@@ -76,7 +143,9 @@ const AIMatchResults: React.FC<AIMatchResultsProps> = ({ onClose }) => {
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <h3 className="text-lg font-bold text-gray-900">{match.teacher.name}</h3>
-                          <p className="text-sm text-gray-600">{match.teacher.experience} experience</p>
+                          {match.teacher.experience && (
+                            <p className="text-sm text-gray-600">{match.teacher.experience} experience</p>
+                          )}
                         </div>
                         <div className={`px-4 py-2 rounded-xl text-white font-bold shadow ${
                           match.score >= 90 ? "bg-gradient-to-r from-emerald-500 to-emerald-700" :
@@ -87,29 +156,35 @@ const AIMatchResults: React.FC<AIMatchResultsProps> = ({ onClose }) => {
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {match.teacher.subjects.map((subj) => (
-                          <Badge key={subj} variant="secondary" className="bg-gray-100 text-gray-700 border-0 text-xs">
-                            {subj}
+                      {match.teacher.subjects.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {match.teacher.subjects.map((subj) => (
+                            <Badge key={subj} variant="secondary" className="bg-gray-100 text-gray-700 border-0 text-xs">
+                              {subj}
+                            </Badge>
+                          ))}
+                          <Badge variant="outline" className="text-xs">
+                            {match.teacher.teachingMode}
                           </Badge>
-                        ))}
-                        <Badge variant="outline" className="text-xs">
-                          {match.teacher.teachingMode}
-                        </Badge>
-                      </div>
+                        </div>
+                      )}
 
-                      <div className="flex items-center gap-1 mb-3">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${
-                              i < Math.floor(match.teacher.rating) ? "text-yellow-500 fill-current" : "text-gray-300"
-                            }`}
-                          />
-                        ))}
-                        <span className="text-sm text-gray-600 ml-1">{match.teacher.rating}</span>
-                        <span className="text-sm text-gray-400 ml-2">{match.teacher.totalStudents} students</span>
-                      </div>
+                      {match.teacher.rating > 0 && (
+                        <div className="flex items-center gap-1 mb-3">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-4 h-4 ${
+                                i < Math.floor(match.teacher.rating) ? "text-yellow-500 fill-current" : "text-gray-300"
+                              }`}
+                            />
+                          ))}
+                          <span className="text-sm text-gray-600 ml-1">{match.teacher.rating}</span>
+                          {match.teacher.totalStudents > 0 && (
+                            <span className="text-sm text-gray-400 ml-2">{match.teacher.totalStudents} students</span>
+                          )}
+                        </div>
+                      )}
 
                       <div className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-100">
                         <div className="flex items-center gap-2 mb-1">

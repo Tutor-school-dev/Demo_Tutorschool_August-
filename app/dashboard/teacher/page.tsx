@@ -1,24 +1,60 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import TeacherNav from "@/components/dashboard/TeacherNav";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, Star, BookOpen, DollarSign, ArrowRight, GraduationCap } from "lucide-react";
 import LearningRadar from "@/components/dashboard/LearningRadar";
-import { demoTeachers, demoStudents, teacherDimensions } from "@/mock/demo-data";
+import { demoTeachers, demoStudents, teacherDimensions, type LearningPattern } from "@/mock/demo-data";
+import { teacherAPI } from "@/lib/api";
+
+const T_PARAM_LABELS: Record<string, string> = {
+  t1_pacing: "Pacing (Mastery-Based)",
+  t2_scaffolding: "Scaffolding (Support Calibration)",
+  t3_feedback_style: "Feedback Style",
+  t4_explanation_style: "Explanation Style",
+  t5_questioning: "Diagnostic Questioning",
+  t6_adaptability: "Cognitive Flexibility",
+  t7_psychological_safety: "Psychological Safety",
+  t8_patience: "Patience & Error Tolerance",
+};
 
 export default function TeacherDashboardPage() {
   const router = useRouter();
   const teacher = demoTeachers[0];
   const teacherName = typeof window !== "undefined" ? localStorage.getItem("name") || teacher.name : teacher.name;
 
+  const [radarData, setRadarData] = useState<LearningPattern[]>(teacherDimensions);
+
+  useEffect(() => {
+    async function loadTeacherProfile() {
+      try {
+        const res = await teacherAPI.getProfile();
+        const profile = res.data as Record<string, unknown>;
+        const scores = profile.scores as Record<string, { point_estimate: number } | null> | undefined;
+        if (scores) {
+          const pattern = Object.entries(scores)
+            .filter(([, v]) => v !== null)
+            .map(([key, triple]) => ({
+              subject: T_PARAM_LABELS[key] || key,
+              score: Math.round((triple as { point_estimate: number }).point_estimate * 100),
+            }));
+          if (pattern.length > 0) setRadarData(pattern);
+        }
+      } catch {
+        // Use demo data
+      }
+    }
+    loadTeacherProfile();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <TeacherNav />
 
       <div className="p-4 sm:p-6 lg:p-8 pt-20 pb-24 md:pb-8 max-w-7xl mx-auto">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 font-serif">
             Welcome back, {teacherName}!
@@ -26,7 +62,6 @@ export default function TeacherDashboardPage() {
           <p className="text-slate-500 mt-1">Here&apos;s an overview of your teaching activities</p>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <Card className="border-0 shadow-sm">
             <CardContent className="p-4 flex items-center gap-3">
@@ -75,11 +110,10 @@ export default function TeacherDashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Teaching Radar */}
           <Card className="border-0 shadow-sm">
             <CardContent className="p-6">
               <h2 className="text-lg font-semibold text-slate-900 mb-4 font-serif">Teaching Profile</h2>
-              <LearningRadar data={teacherDimensions} color="#059669" />
+              <LearningRadar data={radarData} color="#059669" />
               <div className="mt-4 text-center">
                 <Button variant="outline" onClick={() => router.push("/dashboard/teacher/test")} className="rounded-full text-emerald-700 border-emerald-200 hover:bg-emerald-50">
                   <GraduationCap className="w-4 h-4 mr-2" />
@@ -89,9 +123,7 @@ export default function TeacherDashboardPage() {
             </CardContent>
           </Card>
 
-          {/* Quick Actions + Recent Students */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Quick Actions */}
             <Card className="border-0 shadow-sm">
               <CardContent className="p-6">
                 <h2 className="text-lg font-semibold text-slate-900 mb-4 font-serif">Quick Actions</h2>
@@ -112,7 +144,6 @@ export default function TeacherDashboardPage() {
               </CardContent>
             </Card>
 
-            {/* Students Overview */}
             <Card className="border-0 shadow-sm">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">

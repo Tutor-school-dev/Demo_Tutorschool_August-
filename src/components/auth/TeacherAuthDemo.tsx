@@ -5,41 +5,77 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 import Cookies from "js-cookie";
+import { authAPI } from "@/lib/api";
 
 export default function TeacherAuthDemo() {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
-    setTimeout(() => {
-      Cookies.set("jwt_Token", "demo_teacher_token_" + Date.now(), { expires: 7 });
+    try {
+      let data;
+      if (isLogin) {
+        const res = await authAPI.login(email, password);
+        data = res.data;
+      } else {
+        const res = await authAPI.register(email, password, fullName, "teacher");
+        data = res.data;
+      }
+
+      Cookies.set("jwt_Token", data.access_token, { expires: 1 });
+      Cookies.set("refresh_token", data.refresh_token, { expires: 7 });
       localStorage.setItem("model", "Teacher");
-      localStorage.setItem("email", email || "teacher@tutorschool.in");
-      localStorage.setItem("name", "Dr. Rakesh Kumar");
-      setLoading(false);
+      localStorage.setItem("email", email);
+
+      const meRes = await authAPI.me();
+      localStorage.setItem("name", meRes.data.full_name);
+
       router.push("/dashboard/teacher");
-    }, 800);
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ||
+        "Authentication failed. Please try again.";
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="space-y-4">
-      <div className="text-center mb-2">
-        <p className="text-xs text-emerald-600 bg-emerald-50 inline-block px-3 py-1 rounded-full font-medium">
-          Demo Mode — any credentials work
-        </p>
-      </div>
+      {error && (
+        <div className="text-center">
+          <p className="text-xs text-red-600 bg-red-50 inline-block px-3 py-1 rounded-full font-medium">
+            {error}
+          </p>
+        </div>
+      )}
       <form onSubmit={handleSubmit} className="space-y-4 w-full">
+        {!isLogin && (
+          <Input
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            type="text"
+            placeholder="Full name"
+            required
+            className="bg-green-100 border-2 border-black rounded-lg h-10 text-black"
+          />
+        )}
         <Input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           type="email"
           placeholder="Email address"
+          required
           className="bg-green-100 border-2 border-black rounded-lg h-10 text-black"
         />
         <Input
@@ -47,6 +83,8 @@ export default function TeacherAuthDemo() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
+          required
+          minLength={8}
           className="bg-green-100 border-2 border-black rounded-lg h-10 text-black"
         />
         <LoadingButton
