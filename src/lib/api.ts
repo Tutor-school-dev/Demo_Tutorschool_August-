@@ -151,12 +151,24 @@ export const studentAPI = {
   },
 };
 
+export interface ConnectedStudent {
+  id: string;
+  name: string;
+  grade_level: number | null;
+  compatibility_score: number;
+  sessions_completed: number;
+  scores: Record<string, number | null>;
+}
+
 export const teacherAPI = {
   getProfile() {
     return api.get("/teachers/me");
   },
   submitQuestionnaire(data: Record<string, unknown>) {
     return api.post("/teachers/me/questionnaire", data);
+  },
+  getMyStudents() {
+    return api.get<ConnectedStudent[]>("/teachers/me/students");
   },
 };
 
