@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { classes, subjects } from "@/mock/mock";
+import { classes, subjects } from "@/content/marketing";
 
 const benefits = [
   "Free first trial class",

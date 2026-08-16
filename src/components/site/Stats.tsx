@@ -1,4 +1,4 @@
-import { stats } from "@/mock/mock";
+import { stats } from "@/content/marketing";
 
 export default function Stats() {
   return (

@@ -62,6 +62,11 @@ export interface UserResponse {
   avatar_url: string | null;
 }
 
+export interface LearningPattern {
+  subject: string;
+  score: number;
+}
+
 export interface ScoreTriple {
   point_estimate: number;
   confidence: number;

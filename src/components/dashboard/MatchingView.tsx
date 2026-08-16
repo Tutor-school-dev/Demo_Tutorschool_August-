@@ -1,17 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ClipboardList } from "lucide-react";
 import RadarCompare from "./RadarCompare";
 import FitScoreBadge from "./FitScoreBadge";
 import { matchingAPI, type MatchResultAPI } from "@/lib/api";
-import {
-  demoStudents,
-  demoTeachers,
-  calculateFitScore,
-  getMatchBreakdown,
-  type LearningPattern,
-} from "@/mock/demo-data";
+
+interface LearningPattern {
+  subject: string;
+  score: number;
+}
 
 const S_LABELS = ["Attention", "Working Memory", "Feedback Sens.", "Motivation", "Abstraction", "Dev. Stage", "Persistence"];
 
@@ -75,7 +75,35 @@ export default function MatchingView() {
   }, []);
 
   if (useFallback) {
-    return <FallbackMatchingView />;
+    return (
+      <div className="p-4 sm:p-6 lg:p-8 pt-20 pb-24 md:pb-8 max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 font-serif">
+            Smart Matching
+          </h1>
+          <p className="text-slate-500 mt-1">
+            Find the perfect tutor based on learning pattern compatibility
+          </p>
+        </div>
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mb-6">
+            <ClipboardList className="w-8 h-8 text-emerald-600" />
+          </div>
+          <h2 className="text-xl font-semibold text-slate-900 mb-2">
+            Complete your assessment to find tutor matches
+          </h2>
+          <p className="text-slate-500 mb-6 max-w-md">
+            Take the cognitive assessment so our AI can match you with compatible tutors.
+          </p>
+          <Link
+            href="/dashboard/student/test/assessment"
+            className="inline-flex items-center px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-full transition-colors"
+          >
+            Start Assessment
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   if (matches.length === 0) {
@@ -160,88 +188,3 @@ export default function MatchingView() {
   );
 }
 
-function FallbackMatchingView() {
-  const [selectedStudentId, setSelectedStudentId] = useState(demoStudents[0].id);
-  const selectedStudent = demoStudents.find((s) => s.id === selectedStudentId)!;
-
-  const rankedTeachers = demoTeachers
-    .map((teacher) => ({
-      ...teacher,
-      fitScore: calculateFitScore(selectedStudent.learningPattern, teacher.teachingPattern),
-      breakdown: getMatchBreakdown(selectedStudent.learningPattern, teacher.teachingPattern),
-    }))
-    .sort((a, b) => b.fitScore - a.fitScore);
-
-  const selectedTeacher = rankedTeachers[0];
-
-  return (
-    <div className="p-4 sm:p-6 lg:p-8 pt-20 pb-24 md:pb-8 max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 font-serif">
-          Smart Matching
-        </h1>
-        <p className="text-slate-500 mt-1">
-          Find the perfect tutor based on learning pattern compatibility
-        </p>
-      </div>
-
-      <div className="mb-6">
-        <label className="text-sm font-medium text-slate-700 mb-2 block">Select Student</label>
-        <div className="flex flex-wrap gap-2">
-          {demoStudents.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => setSelectedStudentId(s.id)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                selectedStudentId === s.id
-                  ? "bg-emerald-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              {s.name}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <Card className="border-0 shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-lg">Pattern Comparison</CardTitle>
-          <div className="flex items-center gap-2 mt-2">
-            <span className="text-sm text-slate-600">{selectedStudent.name} vs {selectedTeacher.name}</span>
-            <FitScoreBadge score={selectedTeacher.fitScore} size="sm" />
-          </div>
-        </CardHeader>
-        <CardContent>
-          <RadarCompare
-            studentData={selectedStudent.learningPattern}
-            teacherData={selectedTeacher.teachingPattern}
-            studentName={selectedStudent.name}
-            teacherName={selectedTeacher.name}
-          />
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-4">
-            {selectedTeacher.breakdown.map((item) => (
-              <div key={item.dimension} className="bg-gray-50 rounded-lg p-3">
-                <p className="text-[10px] text-slate-500 mb-1">{item.dimension}</p>
-                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-500"
-                    style={{
-                      width: `${item.overlap}%`,
-                      backgroundColor: item.overlap >= 85 ? "#059669" : item.overlap >= 70 ? "#d97706" : "#dc2626",
-                    }}
-                  />
-                </div>
-                <p className="text-xs font-medium mt-1" style={{
-                  color: item.overlap >= 85 ? "#059669" : item.overlap >= 70 ? "#d97706" : "#dc2626",
-                }}>
-                  {item.overlap}%
-                </p>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}

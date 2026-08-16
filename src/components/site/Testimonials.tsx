@@ -1,5 +1,5 @@
 import { Quote, MapPin } from "lucide-react";
-import { testimonials } from "@/mock/mock";
+import { testimonials } from "@/content/marketing";
 
 function ScorePill({
   label,
@@ -30,6 +30,8 @@ function ScorePill({
 }
 
 export default function Testimonials() {
+  if (testimonials.length === 0) return null;
+
   return (
     <section id="results" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">

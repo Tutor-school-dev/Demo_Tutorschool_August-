@@ -39,7 +39,11 @@ export default function StudentAuth() {
       const meRes = await authAPI.me();
       localStorage.setItem("name", meRes.data.full_name);
 
-      router.push("/dashboard/student");
+      if (!meRes.data.onboarding_completed) {
+        router.push("/dashboard/student/test/assessment");
+      } else {
+        router.push("/dashboard/student");
+      }
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ||

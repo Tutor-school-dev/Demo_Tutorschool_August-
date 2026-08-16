@@ -1,8 +1,8 @@
 export const stats = [
-  { value: '10,000+', label: 'Students Guided' },
-  { value: '30%', label: 'Avg. Score Improvement' },
-  { value: '4.9/5', label: 'Parent Rating' },
-  { value: '24hr', label: 'Tutor Match Time' },
+  { value: 'AI-Powered', label: 'Tutor Matching' },
+  { value: 'Personalized', label: 'Learning Plans' },
+  { value: 'Verified', label: 'Expert Tutors' },
+  { value: '< 24hr', label: 'Match Time' },
 ];
 
 export const steps = [
@@ -57,50 +57,18 @@ export const features = [
   },
 ];
 
-export const testimonials = [
-  {
-    subject: 'Math',
-    duration: '3 months',
-    before: 65,
-    after: 92,
-    quote:
-      "Aarav used to dread Math. Within 8 weeks of starting with Ms. Anjali from TutorSchool, his confidence transformed. The weekly reports helped us see exactly where he was improving.",
-    name: 'Priya Sharma',
-    role: 'Mother of Aarav, Class 10',
-    city: 'Delhi',
-    board: 'CBSE',
-    avatar:
-      'https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    subject: 'Science',
-    duration: '4 months',
-    before: 72,
-    after: 89,
-    quote:
-      "What surprised us was how quickly TutorSchool matched us — within a day. The tutor came home, understood our daughter's learning style, and built her interest in Science from scratch.",
-    name: 'Rajesh Kumar',
-    role: 'Father of Ananya, Class 8',
-    city: 'Bangalore',
-    board: 'ICSE',
-    avatar:
-      'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    subject: 'Physics',
-    duration: '6 months',
-    before: 58,
-    after: 95,
-    quote:
-      "Board prep stress was real. The tutor's structured approach and TutorSchool's progress tracking helped Vivaan score 95% — far beyond our expectations. Worth every rupee.",
-    name: 'Meena Patel',
-    role: 'Mother of Vivaan, Class 12',
-    city: 'Mumbai',
-    board: 'CBSE',
-    avatar:
-      'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=400&q=80',
-  },
-];
+export const testimonials: {
+  subject: string;
+  duration: string;
+  before: number;
+  after: number;
+  quote: string;
+  name: string;
+  role: string;
+  city: string;
+  board: string;
+  avatar: string;
+}[] = [];
 
 export const classes = Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`);
 export const subjects = [

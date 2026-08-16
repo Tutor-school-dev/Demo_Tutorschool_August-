@@ -2,22 +2,15 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, Users, ArrowRight, Sparkles, Loader2 } from "lucide-react";
-import RadarCompare from "./RadarCompare";
+import { ArrowRight, Sparkles, Loader2, AlertCircle } from "lucide-react";
 import FitScoreBadge from "./FitScoreBadge";
 import LearningRadar from "./LearningRadar";
-import {
-  demoTeachers,
-  calculateFitScore,
-  getMatchBreakdown,
-  LearningPattern,
-  DIMENSIONS,
-} from "@/mock/demo-data";
 import { matchingAPI, type MatchResultAPI } from "@/lib/api";
 
 const C_MAX = 5.5;
+
+const DIMENSIONS = ["Attention", "Working Memory", "Feedback Sensitivity", "Motivation", "Abstraction", "Dev. Stage"];
 
 const BREAKDOWN_LABELS: Record<string, string> = {
   "S1×T1": "Attention × Pacing",
@@ -29,6 +22,11 @@ const BREAKDOWN_LABELS: Record<string, string> = {
   "S6×T6": "Dev Stage × Adaptability",
   "S7×T7": "Persistence × Safety",
 };
+
+interface LearningPattern {
+  subject: string;
+  score: number;
+}
 
 interface BackendTeacher {
   id: string;
@@ -43,6 +41,7 @@ export default function MatchingEngine() {
   const [scores, setScores] = useState<number[]>([70, 70, 70, 70, 70, 70]);
   const [backendResults, setBackendResults] = useState<BackendTeacher[] | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const learningPattern: LearningPattern[] = DIMENSIONS.map((dim, i) => ({
     subject: dim,
@@ -51,6 +50,7 @@ export default function MatchingEngine() {
 
   const handleFindMatch = async () => {
     setLoading(true);
+    setError(false);
     try {
       const res = await matchingAPI.compute(10);
       const mapped: BackendTeacher[] = res.data.matches.map((m) => {
@@ -66,23 +66,21 @@ export default function MatchingEngine() {
           raw: m,
         };
       });
-      setBackendResults(mapped);
+      if (mapped.length > 0) {
+        setBackendResults(mapped);
+      } else {
+        setBackendResults(null);
+        setError(true);
+      }
       setStep("results");
     } catch {
       setBackendResults(null);
+      setError(true);
       setStep("results");
     } finally {
       setLoading(false);
     }
   };
-
-  const demoRankedTeachers = demoTeachers
-    .map((teacher) => ({
-      ...teacher,
-      fitScore: calculateFitScore(learningPattern, teacher.teachingPattern),
-      breakdown: getMatchBreakdown(learningPattern, teacher.teachingPattern),
-    }))
-    .sort((a, b) => b.fitScore - a.fitScore);
 
   const [selectedIdx, setSelectedIdx] = useState(0);
 
@@ -160,10 +158,40 @@ export default function MatchingEngine() {
     );
   }
 
-  const useBackend = backendResults && backendResults.length > 0;
+  // Error / empty state when backend fails or returns no matches
+  if (error || !backendResults || backendResults.length === 0) {
+    return (
+      <div className="p-4 sm:p-6 lg:p-8 pt-20 pb-24 md:pb-8 max-w-4xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 font-serif">
+              Your Matches
+            </h1>
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setStep("input");
+              setSelectedIdx(0);
+              setError(false);
+            }}
+            className="rounded-full"
+          >
+            Try Again
+          </Button>
+        </div>
+        <Card className="border-0 shadow-sm">
+          <CardContent className="p-8 text-center">
+            <AlertCircle className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+            <p className="text-slate-500 text-base">Unable to compute matches. Please try again later.</p>
+            <p className="text-slate-400 text-sm mt-1">Make sure your learning profile is complete and try adjusting your pattern.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
-  const selectedBackend = useBackend ? backendResults[selectedIdx] : null;
-  const selectedDemo = !useBackend ? demoRankedTeachers[selectedIdx] : null;
+  const selectedBackend = backendResults[selectedIdx];
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 pt-20 pb-24 md:pb-8 max-w-7xl mx-auto">
@@ -173,9 +201,7 @@ export default function MatchingEngine() {
             Your Matches
           </h1>
           <p className="text-slate-500 mt-1">
-            {useBackend
-              ? "Ranked by bilinear compatibility model (C = Sᵀ · M₀ · T)"
-              : "Tutors ranked by learning pattern compatibility"}
+            Ranked by bilinear compatibility model (C = S&#x1D40; &middot; M&#x2080; &middot; T)
           </p>
         </div>
         <Button
@@ -194,88 +220,46 @@ export default function MatchingEngine() {
         <Card className="lg:col-span-2 border-0 shadow-sm">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">
-                {useBackend ? "Compatibility Breakdown" : "Pattern Overlap"}
-              </CardTitle>
-              <FitScoreBadge
-                score={useBackend ? selectedBackend!.fitScore : selectedDemo!.fitScore}
-                size="md"
-              />
+              <CardTitle className="text-lg">Compatibility Breakdown</CardTitle>
+              <FitScoreBadge score={selectedBackend.fitScore} size="md" />
             </div>
           </CardHeader>
           <CardContent>
-            {useBackend && selectedBackend ? (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {selectedBackend.breakdown.map((item) => (
-                    <div key={item.dimension} className="bg-gray-50 rounded-lg p-3">
-                      <p className="text-[10px] text-slate-500 mb-1">{item.dimension}</p>
-                      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                          className="h-full rounded-full transition-all duration-500"
-                          style={{
-                            width: `${Math.min(item.overlap, 100)}%`,
-                            backgroundColor:
-                              item.overlap >= 80 ? "#059669" : item.overlap >= 50 ? "#d97706" : "#dc2626",
-                          }}
-                        />
-                      </div>
-                      <p
-                        className="text-xs font-medium mt-1"
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {selectedBackend.breakdown.map((item) => (
+                  <div key={item.dimension} className="bg-gray-50 rounded-lg p-3">
+                    <p className="text-[10px] text-slate-500 mb-1">{item.dimension}</p>
+                    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
                         style={{
-                          color:
+                          width: `${Math.min(item.overlap, 100)}%`,
+                          backgroundColor:
                             item.overlap >= 80 ? "#059669" : item.overlap >= 50 ? "#d97706" : "#dc2626",
                         }}
-                      >
-                        {item.overlap}%
-                      </p>
+                      />
                     </div>
-                  ))}
-                </div>
-                <div className="mt-4 p-3 bg-emerald-50 rounded-lg">
-                  <p className="text-xs text-emerald-700">
-                    Compatibility: {selectedBackend.raw.compatibility_score.toFixed(2)} / {C_MAX} |
-                    Confidence: {(selectedBackend.raw.match_confidence * 100).toFixed(0)}% |
-                    {selectedBackend.raw.exploration_flag && " Exploration match"}
-                  </p>
-                </div>
+                    <p
+                      className="text-xs font-medium mt-1"
+                      style={{
+                        color:
+                          item.overlap >= 80 ? "#059669" : item.overlap >= 50 ? "#d97706" : "#dc2626",
+                      }}
+                    >
+                      {item.overlap}%
+                    </p>
+                  </div>
+                ))}
               </div>
-            ) : selectedDemo ? (
-              <>
-                <RadarCompare
-                  studentData={learningPattern}
-                  teacherData={selectedDemo.teachingPattern}
-                  studentName="You"
-                  teacherName={selectedDemo.name}
-                />
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
-                  {selectedDemo.breakdown.map((item) => (
-                    <div key={item.dimension} className="bg-gray-50 rounded-lg p-3">
-                      <p className="text-[10px] text-slate-500 mb-1">{item.dimension}</p>
-                      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                          className="h-full rounded-full transition-all duration-500"
-                          style={{
-                            width: `${item.overlap}%`,
-                            backgroundColor:
-                              item.overlap >= 85 ? "#059669" : item.overlap >= 70 ? "#d97706" : "#dc2626",
-                          }}
-                        />
-                      </div>
-                      <p
-                        className="text-xs font-medium mt-1"
-                        style={{
-                          color:
-                            item.overlap >= 85 ? "#059669" : item.overlap >= 70 ? "#d97706" : "#dc2626",
-                        }}
-                      >
-                        {item.overlap}%
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </>
-            ) : null}
+              <div className="mt-4 p-3 bg-emerald-50 rounded-lg">
+                <p className="text-xs text-emerald-700">
+                  Compatibility: {selectedBackend.raw.compatibility_score.toFixed(2)} / {C_MAX} |
+                  Confidence: {(selectedBackend.raw.match_confidence * 100).toFixed(0)}% |
+                  {selectedBackend.raw.exploration_flag && " Exploration match"}
+                </p>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -284,94 +268,45 @@ export default function MatchingEngine() {
             <CardTitle className="text-lg">Best Matches</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {useBackend
-              ? backendResults.map((teacher, idx) => (
-                  <button
-                    key={teacher.id}
-                    onClick={() => setSelectedIdx(idx)}
-                    className={`w-full text-left p-3 rounded-xl transition-all ${
-                      selectedIdx === idx
-                        ? "bg-emerald-50 ring-2 ring-emerald-200"
-                        : "bg-gray-50 hover:bg-gray-100"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
-                        <div className="w-10 h-10 rounded-full bg-violet-100 flex items-center justify-center">
-                          <span className="text-sm font-bold text-violet-700">
-                            {teacher.name
-                              .split(" ")
-                              .map((w) => w[0])
-                              .join("")
-                              .slice(0, 2)}
-                          </span>
-                        </div>
-                        {idx === 0 && (
-                          <span className="absolute -top-1 -right-1 w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center text-[9px] font-bold text-white">
-                            1
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-slate-900 truncate">
-                          {teacher.name}
-                        </p>
-                        <p className="text-xs text-slate-500">
-                          Score: {teacher.raw.compatibility_score.toFixed(2)}
-                        </p>
-                      </div>
-                      <FitScoreBadge score={teacher.fitScore} size="sm" />
+            {backendResults.map((teacher, idx) => (
+              <button
+                key={teacher.id}
+                onClick={() => setSelectedIdx(idx)}
+                className={`w-full text-left p-3 rounded-xl transition-all ${
+                  selectedIdx === idx
+                    ? "bg-emerald-50 ring-2 ring-emerald-200"
+                    : "bg-gray-50 hover:bg-gray-100"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-10 h-10 rounded-full bg-violet-100 flex items-center justify-center">
+                      <span className="text-sm font-bold text-violet-700">
+                        {teacher.name
+                          .split(" ")
+                          .map((w) => w[0])
+                          .join("")
+                          .slice(0, 2)}
+                      </span>
                     </div>
-                  </button>
-                ))
-              : demoRankedTeachers.map((teacher, idx) => (
-                  <button
-                    key={teacher.id}
-                    onClick={() => setSelectedIdx(idx)}
-                    className={`w-full text-left p-3 rounded-xl transition-all ${
-                      selectedIdx === idx
-                        ? "bg-emerald-50 ring-2 ring-emerald-200"
-                        : "bg-gray-50 hover:bg-gray-100"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
-                        <div className="w-10 h-10 rounded-full bg-violet-100 flex items-center justify-center">
-                          <span className="text-sm font-bold text-violet-700">{teacher.avatar}</span>
-                        </div>
-                        {idx === 0 && (
-                          <span className="absolute -top-1 -right-1 w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center text-[9px] font-bold text-white">
-                            1
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-slate-900 truncate">{teacher.name}</p>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-                          <span className="text-xs text-slate-600">{teacher.rating}</span>
-                          <Users className="w-3 h-3 text-slate-400" />
-                          <span className="text-xs text-slate-500">{teacher.totalStudents}</span>
-                        </div>
-                      </div>
-                      <FitScoreBadge score={teacher.fitScore} size="sm" />
-                    </div>
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {teacher.subjects.map((subj) => (
-                        <Badge
-                          key={subj}
-                          variant="secondary"
-                          className="bg-white text-gray-600 text-[10px] border-0"
-                        >
-                          {subj}
-                        </Badge>
-                      ))}
-                      <Badge variant="secondary" className="bg-white text-gray-600 text-[10px] border-0">
-                        ₹{teacher.lessonPrice}/hr
-                      </Badge>
-                    </div>
-                  </button>
-                ))}
+                    {idx === 0 && (
+                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center text-[9px] font-bold text-white">
+                        1
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-slate-900 truncate">
+                      {teacher.name}
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      Score: {teacher.raw.compatibility_score.toFixed(2)}
+                    </p>
+                  </div>
+                  <FitScoreBadge score={teacher.fitScore} size="sm" />
+                </div>
+              </button>
+            ))}
           </CardContent>
         </Card>
       </div>

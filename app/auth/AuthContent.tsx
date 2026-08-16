@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight, GraduationCap, BookOpen } from "lucide-react";
 import Image from "next/image";
 import StudentAuth from "@/components/auth/StudentAuth";
-import TeacherAuthDemo from "@/components/auth/TeacherAuthDemo";
+import TeacherAuth from "@/components/auth/TeacherAuth";
 
 export default function AuthContent() {
   const searchParams = useSearchParams();
@@ -82,7 +82,7 @@ export default function AuthContent() {
           </div>
 
           <p className="text-xs text-center text-gray-400">
-            Demo Mode — no real account needed
+            Create your account to get started
           </p>
         </div>
       );
@@ -97,7 +97,7 @@ export default function AuthContent() {
           <ChevronLeft className="w-4 h-4" />
           Back to role selection
         </button>
-        {selectedRole === "student" ? <StudentAuth /> : <TeacherAuthDemo />}
+        {selectedRole === "student" ? <StudentAuth /> : <TeacherAuth />}
       </div>
     );
   };

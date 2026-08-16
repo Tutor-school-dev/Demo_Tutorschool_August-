@@ -10,7 +10,7 @@ import {
   Legend,
   Tooltip,
 } from "recharts";
-import { LearningPattern } from "@/mock/demo-data";
+import { LearningPattern } from "@/lib/api";
 
 const SHORT_LABELS: Record<string, string> = {
   "Concept Formation & Abstraction Ability": "Concept Formation",

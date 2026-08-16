@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Brain, X, Star, CheckCircle, Sparkles, Loader2 } from "lucide-react";
-import { demoTeachers } from "@/mock/demo-data";
+import { Brain, X, Star, CheckCircle, Sparkles, Loader2, ClipboardList } from "lucide-react";
+import Link from "next/link";
 import { matchingAPI, type MatchResultAPI } from "@/lib/api";
 
 interface AIMatchResultsProps {
@@ -44,7 +44,7 @@ const AIMatchResults: React.FC<AIMatchResultsProps> = ({ onClose }) => {
           setBackendMatches(res.data.matches);
         }
       } catch {
-        // Fall back to demo data
+        // API failed — will show empty state
       } finally {
         setLoading(false);
       }
@@ -63,31 +63,66 @@ const AIMatchResults: React.FC<AIMatchResultsProps> = ({ onClose }) => {
     );
   }
 
-  const rankedTeachers = backendMatches
-    ? backendMatches.map((match, idx) => ({
-        teacher: {
-          id: match.teacher_id,
-          name: match.teacher_name,
-          avatar: match.teacher_name.split(" ").map(w => w[0]).join("").slice(0, 2),
-          subjects: [] as string[],
-          experience: "",
-          teachingMode: "Both",
-          rating: 4.8,
-          totalStudents: 0,
-        },
-        score: Math.round((match.compatibility_score / C_MAX) * 100),
-        reasoning: generateInsight(match.breakdown),
-      }))
-    : demoTeachers.map((teacher, idx) => ({
-        teacher,
-        score: [92, 87, 81, 76][idx] || 70,
-        reasoning: [
-          "Strong alignment with your working memory profile and processing speed. This tutor's structured, step-by-step approach matches your learning style.",
-          "Excellent fit for your exploratory nature. This tutor encourages open-ended investigation and creative problem-solving.",
-          "Great match for building confidence. This tutor specializes in scaffolded challenges that grow with the learner.",
-          "Compatible with your precision-focused learning style. This tutor emphasizes accuracy and systematic approaches.",
-        ][idx] || "Good overall compatibility based on cognitive profile analysis.",
-      }));
+  if (!backendMatches || backendMatches.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg">
+                    <Brain className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-1">AI-Powered Matches</h2>
+                    <p className="text-gray-600">No matches found yet</p>
+                  </div>
+                </div>
+                <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full h-10 w-10">
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
+            </div>
+            <div className="p-8">
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mb-6">
+                  <ClipboardList className="w-8 h-8 text-emerald-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                  No matches found yet. Complete your assessment to get matched with teachers.
+                </h3>
+                <p className="text-slate-500 mb-6 max-w-md">
+                  Once your cognitive profile is ready, our AI will find the best tutors for your learning style.
+                </p>
+                <Link
+                  href="/dashboard/student/test/assessment"
+                  className="inline-flex items-center px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-full transition-colors"
+                >
+                  Start Assessment
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const rankedTeachers = backendMatches.map((match) => ({
+    teacher: {
+      id: match.teacher_id,
+      name: match.teacher_name,
+      avatar: match.teacher_name.split(" ").map(w => w[0]).join("").slice(0, 2),
+      subjects: [] as string[],
+      experience: "",
+      teachingMode: "Both",
+      rating: 4.8,
+      totalStudents: 0,
+    },
+    score: Math.round((match.compatibility_score / C_MAX) * 100),
+    reasoning: generateInsight(match.breakdown),
+  }));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
@@ -102,9 +137,7 @@ const AIMatchResults: React.FC<AIMatchResultsProps> = ({ onClose }) => {
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-1">AI-Powered Matches</h2>
                   <p className="text-gray-600">
-                    {backendMatches
-                      ? "Tutors matched using bilinear compatibility model (C = Sᵀ · M₀ · T)"
-                      : "Tutors matched to your cognitive learning profile"}
+                    {"Tutors matched using bilinear compatibility model (C = Sᵀ · M₀ · T)"}
                   </p>
                 </div>
               </div>
