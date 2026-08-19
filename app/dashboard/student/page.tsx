@@ -18,6 +18,10 @@ export default function StudentDashboardPage() {
       return;
     }
     authAPI.me().then((res) => {
+      if (res.data.role !== "student") {
+        router.push("/dashboard/teacher");
+        return;
+      }
       if (!res.data.onboarding_completed) {
         router.push("/dashboard/student/test/assessment");
       } else {

@@ -41,6 +41,10 @@ export default function TeacherDashboardPage() {
     async function loadData() {
       try {
         const meCheck = await authAPI.me();
+        if (meCheck.data.role !== "teacher") {
+          router.push("/dashboard/student");
+          return;
+        }
         if (!meCheck.data.onboarding_completed) {
           router.push("/dashboard/teacher/test/assessment");
           return;

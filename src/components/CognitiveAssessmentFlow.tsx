@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Brain, ArrowRight, CheckCircle, Sparkles } from "lucide-react";
 import { useCognitiveAssessment, AssessmentPayload, AssessmentResponse } from "@/hooks/useCognitiveAssessment";
+import { authAPI } from "@/lib/api";
 import {
   ConservationTrackingState,
   ClassificationTrackingState,
@@ -249,8 +250,16 @@ export const CognitiveAssessmentFlow: React.FC = () => {
           {currentScreen === 7 && results && (
             <ResultsScreen
               results={results}
-              onComplete={() => router.push("/dashboard/student")}
-              onFindTutor={() => {
+              onComplete={async () => {
+                // Reload user profile to get updated onboarding_completed flag
+                try {
+                  await authAPI.me();
+                  router.push("/dashboard/student");
+                } catch {
+                  router.push("/dashboard/student");
+                }
+              }}
+              onFindTutor={async () => {
                 // Save assessment completion flag
                 if (typeof window !== "undefined") {
                   localStorage.setItem("assessmentCompleted", "true");
@@ -261,6 +270,12 @@ export const CognitiveAssessmentFlow: React.FC = () => {
                       timestamp: Date.now(),
                     })
                   );
+                }
+                // Reload user profile to get updated onboarding_completed flag
+                try {
+                  await authAPI.me();
+                } catch {
+                  // Continue anyway
                 }
                 router.push("/dashboard/student/matching-results");
               }}

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { authAPI } from "@/lib/api";
 import { TeacherCognitiveAssessmentFlow } from "@/components/TeacherCognitiveAssessmentFlow";
 
 export default function TeacherAssessmentPage() {
@@ -11,19 +12,20 @@ export default function TeacherAssessmentPage() {
 
   useEffect(() => {
     const token = Cookies.get("jwt_Token");
-    const model = localStorage.getItem("model");
-
     if (!token) {
       router.push("/auth?model=teacher");
       return;
     }
 
-    if (model !== "Teacher") {
-      router.push("/dashboard");
-      return;
-    }
-
-    setIsAuthorized(true);
+    authAPI.me().then((res) => {
+      if (res.data.role !== "teacher") {
+        router.push("/dashboard/student");
+        return;
+      }
+      setIsAuthorized(true);
+    }).catch(() => {
+      router.push("/auth?model=teacher");
+    });
   }, [router]);
 
   if (!isAuthorized) {

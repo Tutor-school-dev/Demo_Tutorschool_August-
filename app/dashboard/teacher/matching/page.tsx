@@ -1,13 +1,13 @@
 "use client";
 
 import TeacherNav from "@/components/dashboard/TeacherNav";
-import MatchingView from "@/components/dashboard/MatchingView";
+import TeacherMatchingView from "@/components/dashboard/TeacherMatchingView";
 
 export default function TeacherMatchingPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <TeacherNav />
-      <MatchingView />
+      <TeacherMatchingView />
     </div>
   );
 }

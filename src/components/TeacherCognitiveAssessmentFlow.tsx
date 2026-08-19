@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Brain, ArrowRight, CheckCircle, GraduationCap } from "lucide-react";
 import { useTeacherCognitiveAssessment, TeacherAssessmentPayload, TeacherAssessmentResponse } from "@/hooks/useTeacherCognitiveAssessment";
+import { authAPI } from "@/lib/api";
 import {
   ClassificationTrackingState,
   SeriationTrackingState,
@@ -202,7 +203,20 @@ export const TeacherCognitiveAssessmentFlow: React.FC = () => {
           {currentScreen === 6 && <ExplanationScreen state={assessmentState.explanation} setState={(s) => setAssessmentState((prev) => ({ ...prev, explanation: s }))} onNext={nextScreen} />}
           {currentScreen === 7 && <AdaptabilityScreen state={assessmentState.adaptability} setState={(s) => setAssessmentState((prev) => ({ ...prev, adaptability: s }))} onNext={nextScreen} />}
           {currentScreen === 8 && <PatienceScreen state={assessmentState.patience} setState={(s) => setAssessmentState((prev) => ({ ...prev, patience: s }))} onFinish={handleFinishAssessment} loading={loading} error={error} />}
-          {currentScreen === 9 && results && <ResultsScreen results={results} onComplete={() => router.push("/dashboard/teacher")} />}
+          {currentScreen === 9 && results && (
+            <ResultsScreen
+              results={results}
+              onComplete={async () => {
+                // Reload user profile to get updated onboarding_completed flag
+                try {
+                  await authAPI.me();
+                } catch {
+                  // Continue anyway
+                }
+                router.push("/dashboard/teacher");
+              }}
+            />
+          )}
         </CardContent>
       </Card>
     </div>

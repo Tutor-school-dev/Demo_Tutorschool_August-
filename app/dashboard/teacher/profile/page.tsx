@@ -99,11 +99,17 @@ export default function TeacherProfilePage() {
     loadData();
   }, []);
 
-  const handleSave = () => {
-    localStorage.setItem("name", name);
-    localStorage.setItem("email", email);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  const handleSave = async () => {
+    try {
+      const updates: Record<string, unknown> = {};
+      if (price) updates.hourly_rate = parseFloat(price);
+      if (mode) updates.availability = { mode };
+      await teacherAPI.updateProfile(updates as Parameters<typeof teacherAPI.updateProfile>[0]);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch {
+      setSaved(false);
+    }
   };
 
   if (loading) {

@@ -169,6 +169,9 @@ export const teacherAPI = {
   getProfile() {
     return api.get("/teachers/me");
   },
+  updateProfile(data: { bio?: string; subjects?: Record<string, unknown>; experience_years?: number; hourly_rate?: number; availability?: Record<string, unknown>; max_students?: number }) {
+    return api.patch("/teachers/me", data);
+  },
   submitQuestionnaire(data: Record<string, unknown>) {
     return api.post("/teachers/me/questionnaire", data);
   },
@@ -176,6 +179,15 @@ export const teacherAPI = {
     return api.get<ConnectedStudent[]>("/teachers/me/students");
   },
 };
+
+export interface TeacherOfferItem {
+  id: string;
+  student_id: string;
+  student_name: string;
+  compatibility_score: number;
+  status: string;
+  created_at: string | null;
+}
 
 export const matchingAPI = {
   compute(maxResults = 10, explorationRate = 0.1) {
@@ -187,17 +199,26 @@ export const matchingAPI = {
   getOffers(studentId: string) {
     return api.get(`/matching/offers/${studentId}`);
   },
+  getTeacherOffers() {
+    return api.get<TeacherOfferItem[]>("/matching/offers/teacher/me");
+  },
   getBreakdown(offerId: string) {
     return api.get(`/matching/offers/${offerId}/breakdown`);
   },
   acceptOffer(offerId: string) {
     return api.post(`/matching/offers/${offerId}/accept`);
   },
+  declineOffer(offerId: string) {
+    return api.post(`/matching/offers/${offerId}/decline`);
+  },
 };
 
 export const assessmentAPI = {
-  submit(data: { parameter_key: string; observed_value: number; source: string }[]) {
-    return api.post("/assessments/submit", { events: data });
+  submit(data: { parameter_key: string; score: number; confidence: number; raw_data?: Record<string, unknown> }[]) {
+    return api.post("/assessments/submit", {
+      assessment_type: "cognitive_baseline",
+      parameters: data,
+    });
   },
 };
 
