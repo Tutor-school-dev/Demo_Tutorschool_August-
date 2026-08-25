@@ -7,7 +7,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { heroImage } from "@/mock/mock";
+import { heroImage } from "@/content/marketing";
 
 export default function Hero() {
   return (

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { TeacherAssessmentPayload, TeacherAssessmentResponse, computeTeacherCognitiveScores } from "@/lib/teacherCognitiveScoring";
+import { assessmentAPI } from "@/lib/api";
 
 export type { TeacherAssessmentPayload, TeacherAssessmentResponse, TeacherCognitiveParameter } from "@/lib/teacherCognitiveScoring";
 
@@ -16,8 +17,21 @@ export const useTeacherCognitiveAssessment = () => {
     setAlreadyCompleted(false);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
       const result = computeTeacherCognitiveScores(payload);
+
+      const params = [
+        { parameter_key: "t1_pacing", score: result.pacing.final_score / 100, confidence: 0.8 },
+        { parameter_key: "t2_scaffolding", score: result.scaffolding.final_score / 100, confidence: 0.8 },
+        { parameter_key: "t3_feedback_style", score: result.feedback_style.final_score / 100, confidence: 0.8 },
+        { parameter_key: "t4_explanation_style", score: result.diagnostic_questioning.final_score / 100, confidence: 0.8 },
+        { parameter_key: "t5_motivation_style", score: result.motivation_style.final_score / 100, confidence: 0.8 },
+        { parameter_key: "t6_adaptability", score: result.cognitive_flexibility.final_score / 100, confidence: 0.8 },
+        { parameter_key: "t7_psychological_safety", score: result.psychological_safety.final_score / 100, confidence: 0.8 },
+        { parameter_key: "t8_patience", score: result.patience.final_score / 100, confidence: 0.8 },
+      ];
+
+      await assessmentAPI.submit(params);
+
       return result;
     } catch {
       setError("Failed to process assessment");

@@ -2,8 +2,20 @@
 
 import { useState } from "react";
 import { AssessmentPayload, AssessmentResponse, computeCognitiveScores } from "@/lib/cognitiveScoring";
+import { assessmentAPI } from "@/lib/api";
 
 export type { AssessmentPayload, AssessmentResponse, CognitiveParameter } from "@/lib/cognitiveScoring";
+
+function mapToBackendParams(result: AssessmentResponse) {
+  return [
+    { parameter_key: "s1", score: (result.confidence.final_score + (100 - result.impulsivity.final_score)) / 200, confidence: 0.8 },
+    { parameter_key: "s2", score: (result.working_memory.final_score + result.working_memory_load_handling.final_score) / 200, confidence: 0.8 },
+    { parameter_key: "s3", score: result.error_correction_ability.final_score / 100, confidence: 0.8 },
+    { parameter_key: "s4", score: result.exploratory_nature.final_score / 100, confidence: 0.8 },
+    { parameter_key: "s5", score: result.precision.final_score / 100, confidence: 0.8 },
+    { parameter_key: "s7", score: result.confidence.final_score / 100, confidence: 0.8 },
+  ];
+}
 
 export const useCognitiveAssessment = () => {
   const [loading, setLoading] = useState(false);
@@ -16,8 +28,11 @@ export const useCognitiveAssessment = () => {
     setAlreadyCompleted(false);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
       const result = computeCognitiveScores(payload);
+
+      const params = mapToBackendParams(result);
+      await assessmentAPI.submit(params);
+
       return result;
     } catch {
       setError("Failed to process assessment");

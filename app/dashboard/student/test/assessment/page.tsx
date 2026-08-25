@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { CognitiveAssessmentFlow } from "@/components/CognitiveAssessmentFlow";
+import StudentQuestionAssessment from "@/components/assessment/StudentQuestionAssessment";
 
 export default function CognitiveAssessmentPage() {
   const router = useRouter();
@@ -37,5 +37,5 @@ export default function CognitiveAssessmentPage() {
     );
   }
 
-  return <CognitiveAssessmentFlow />;
+  return <StudentQuestionAssessment />;
 }

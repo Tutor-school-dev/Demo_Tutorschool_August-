@@ -7,7 +7,7 @@ import TeacherSignup from "./TeacherSignup";
 import ParentLogin from "./ParentLogin";
 import ParentSignup from "./ParentSignup";
 import StudentAuth from "./StudentAuth";
-import TeacherAuthDemo from "./TeacherAuthDemo";
+import TeacherAuth from "./TeacherAuth";
 
 interface SignUpTabsProps {
   mode?: string;
@@ -26,7 +26,7 @@ export default function SignUpTabs({ mode }: SignUpTabsProps) {
   }
 
   if (isTeacher) {
-    return <TeacherAuthDemo />;
+    return <TeacherAuth />;
   }
 
   return (

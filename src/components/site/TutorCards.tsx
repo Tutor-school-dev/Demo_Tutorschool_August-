@@ -138,6 +138,9 @@ export default function TutorCards() {
           <h2 className="font-serif text-4xl sm:text-5xl leading-[1.1] text-slate-900 tracking-tight">
             Every card carries a fit score for your child
           </h2>
+          <p className="mt-2 text-sm text-slate-500 italic">
+            Sample tutor cards (illustrative)
+          </p>
           <p className="mt-5 text-slate-600 text-lg leading-relaxed">
             Hover any tutor&apos;s report to see the shape of their score. Sign
             in once — with your child&apos;s learning profile — to reveal the

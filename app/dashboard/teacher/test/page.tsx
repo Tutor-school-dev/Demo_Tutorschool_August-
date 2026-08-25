@@ -3,9 +3,8 @@
 import Link from "next/link";
 import TeacherNav from "@/components/dashboard/TeacherNav";
 import { Card, CardContent } from "@/components/ui/card";
-import { FileText, Clock, ArrowRight, GraduationCap, Sparkles } from "lucide-react";
+import { FileText, ArrowRight, GraduationCap, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { demoTeacherTests } from "@/mock/demo-data";
 
 export default function TeacherTestPage() {
   return (
@@ -51,33 +50,10 @@ export default function TeacherTestPage() {
 
         {/* Past results */}
         <h2 className="text-lg font-semibold text-slate-900 mb-4 font-serif">Past Results</h2>
-        <div className="space-y-3">
-          {demoTeacherTests.map((test) => (
-            <Card key={test.id} className="border-0 shadow-sm">
-              <CardContent className="p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-emerald-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-900">{test.subject}</p>
-                    <p className="text-xs text-slate-500">
-                      {test.correctAnswers}/{test.totalQuestions} correct &middot; {test.date}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1 text-slate-500">
-                    <Clock className="w-3.5 h-3.5" />
-                    <span className="text-xs">{test.timeTaken}m</span>
-                  </div>
-                  <div className={`text-lg font-bold ${test.score >= 80 ? "text-emerald-600" : test.score >= 60 ? "text-amber-600" : "text-red-500"}`}>
-                    {test.score}%
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="text-center py-12">
+          <FileText className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+          <p className="text-slate-500 text-sm">No past results yet</p>
+          <p className="text-slate-400 text-xs mt-1">Complete an assessment to see your results here</p>
         </div>
       </div>
     </div>

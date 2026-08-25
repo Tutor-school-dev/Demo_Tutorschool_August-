@@ -5,7 +5,7 @@ import {
   Calendar,
   HeartHandshake,
 } from "lucide-react";
-import { features } from "@/mock/mock";
+import { features } from "@/content/marketing";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   ShieldCheck,
