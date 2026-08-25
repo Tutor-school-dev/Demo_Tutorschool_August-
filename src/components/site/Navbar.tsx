@@ -62,7 +62,7 @@ export default function Navbar() {
             variant="ghost"
             className="rounded-full text-slate-700 hover:text-emerald-600 px-5 h-11 font-semibold"
           >
-            <a href="/auth">Login</a>
+            <a href="/dashboard/student/onboarding">Login</a>
           </Button>
           <Button
             asChild
@@ -94,7 +94,7 @@ export default function Navbar() {
             </a>
           ))}
           <a
-            href="/auth"
+            href="/dashboard/student/onboarding"
             onClick={() => setOpen(false)}
             className="block text-center rounded-full border-2 border-emerald-600 text-emerald-600 py-3 font-semibold"
           >
