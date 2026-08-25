@@ -40,7 +40,7 @@ export default function StudentAuth() {
       localStorage.setItem("name", meRes.data.full_name);
 
       if (!meRes.data.onboarding_completed) {
-        router.push("/dashboard/student/test/assessment");
+        router.push("/dashboard/student/onboarding");
       } else {
         router.push("/dashboard/student");
       }

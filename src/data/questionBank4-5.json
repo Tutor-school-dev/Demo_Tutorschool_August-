@@ -1,0 +1,345 @@
+{
+  "grade": "4-5",
+  "version": "1.0",
+  "sections": [
+    {
+      "id": "situational_choice",
+      "title": "Situational Choice Questions",
+      "description": "Choose what you would do in each situation"
+    },
+    {
+      "id": "forced_choice",
+      "title": "Forced-Choice / Trade-off Questions",
+      "description": "Pick between two options"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q21",
+      "section": "situational_choice",
+      "title": "Repeated Failure, Different Cause Each Time",
+      "scenario": "You've lost the same game level 5 times, and each time for a different reason. What do you do?",
+      "options": [
+        { "key": "A", "text": "Keep trying the same way", "primarySignal": "low", "secondarySignal": "low" },
+        { "key": "B", "text": "Change one thing and try again", "primarySignal": "high", "secondarySignal": "high" },
+        { "key": "C", "text": "Watch a replay of the last try first", "primarySignal": "high", "secondarySignal": "high" },
+        { "key": "D", "text": "Take a break, then come back", "primarySignal": "moderate", "secondarySignal": "moderate" }
+      ],
+      "type": "mcq",
+      "primaryParam": "PER",
+      "secondaryParam": "FB"
+    },
+    {
+      "id": "Q22",
+      "section": "situational_choice",
+      "title": "Forgotten Homework, No Time to Fix It",
+      "scenario": "You forgot your homework at school and there's no time to fix it before class. What's your first move?",
+      "options": [
+        { "key": "A", "text": "Tell the teacher before class starts", "primarySignal": "high", "secondarySignal": "moderate" },
+        { "key": "B", "text": "Quietly hope it doesn't come up", "primarySignal": "low", "secondarySignal": "low" },
+        { "key": "C", "text": "Ask a friend to glance at theirs quickly", "primarySignal": "moderate", "secondarySignal": "high" },
+        { "key": "D", "text": "Plan what you'll say if asked", "primarySignal": "moderate", "secondarySignal": "high" }
+      ],
+      "type": "mcq",
+      "primaryParam": "FB",
+      "secondaryParam": "STR"
+    },
+    {
+      "id": "Q23",
+      "section": "situational_choice",
+      "title": "Split Attention — Real Cost to Helping",
+      "scenario": "You're 80% done with your own puzzle when a friend, who is stuck, asks for help. Helping might mean losing your own progress. What do you do?",
+      "options": [
+        { "key": "A", "text": "Finish your puzzle first, then help", "primarySignal": "high", "secondarySignal": "moderate" },
+        { "key": "B", "text": "Stop and help immediately", "primarySignal": "low", "secondarySignal": "low" },
+        { "key": "C", "text": "Give a quick tip without stopping", "primarySignal": "high", "secondarySignal": "high" },
+        { "key": "D", "text": "Ask them to wait just a minute", "primarySignal": "moderate", "secondarySignal": "moderate" }
+      ],
+      "type": "mcq",
+      "primaryParam": "ATT",
+      "secondaryParam": "STR"
+    },
+    {
+      "id": "Q24",
+      "section": "situational_choice",
+      "title": "Hard Level — Every Option Has a Real Cost",
+      "scenario": "A level is very hard. What do you choose?",
+      "options": [
+        { "key": "A", "text": "Skip it (miss a story clue)", "primarySignal": "low", "secondarySignal": "low" },
+        { "key": "B", "text": "Keep retrying (no limit, but you're getting tired)", "primarySignal": "high", "secondarySignal": "low" },
+        { "key": "C", "text": "Use a hint (lose 5 points)", "primarySignal": "moderate", "secondarySignal": "high" },
+        { "key": "D", "text": "Watch someone else first (takes 2 minutes)", "primarySignal": "moderate", "secondarySignal": "high" }
+      ],
+      "type": "mcq",
+      "primaryParam": "PER",
+      "secondaryParam": "STR"
+    },
+    {
+      "id": "Q25",
+      "section": "situational_choice",
+      "title": "Long Repetitive Task, Mistakes Increasing",
+      "scenario": "You're sorting 50 shells. By shell 30, you notice more mistakes because you're tired. What do you do?",
+      "options": [
+        { "key": "A", "text": "Push through at the same speed", "primarySignal": "moderate", "secondarySignal": "low" },
+        { "key": "B", "text": "Slow down to be careful", "primarySignal": "high", "secondarySignal": "high" },
+        { "key": "C", "text": "Take a short break, then continue", "primarySignal": "high", "secondarySignal": "moderate" },
+        { "key": "D", "text": "Speed up to just finish", "primarySignal": "low", "secondarySignal": "low" }
+      ],
+      "type": "mcq",
+      "primaryParam": "PER",
+      "secondaryParam": "STR"
+    },
+    {
+      "id": "Q26",
+      "section": "situational_choice",
+      "title": "Disagreement Under a Tight Deadline",
+      "scenario": "Your teammate wants the rocket blue, you want it red — and it must be finished in 5 minutes. What do you do?",
+      "options": [
+        { "key": "A", "text": "Suggest a compromise (like stripes or half-and-half)", "primarySignal": "high", "secondarySignal": "moderate" },
+        { "key": "B", "text": "Let them have their way to save time", "primarySignal": "moderate", "secondarySignal": "high" },
+        { "key": "C", "text": "Insist on your choice since you started it", "primarySignal": "low", "secondarySignal": "low" },
+        { "key": "D", "text": "Suggest voting or flipping a coin", "primarySignal": "high", "secondarySignal": "high" }
+      ],
+      "type": "mcq",
+      "primaryParam": "STR",
+      "secondaryParam": "PER"
+    },
+    {
+      "id": "Q27",
+      "section": "situational_choice",
+      "title": "Confusing Rules, Social Waiting-Pressure",
+      "scenario": "A new board game's rules feel confusing, and others are waiting to start. What do you do?",
+      "options": [
+        { "key": "A", "text": "Ask them to wait while you re-read", "primarySignal": "high", "secondarySignal": "low" },
+        { "key": "B", "text": "Start playing and learn as you go", "primarySignal": "moderate", "secondarySignal": "high" },
+        { "key": "C", "text": "Ask someone to explain just the first move", "primarySignal": "high", "secondarySignal": "moderate" },
+        { "key": "D", "text": "Watch one full round before joining", "primarySignal": "moderate", "secondarySignal": "moderate" }
+      ],
+      "type": "mcq",
+      "primaryParam": "STR",
+      "secondaryParam": "PER"
+    },
+    {
+      "id": "Q28",
+      "section": "situational_choice",
+      "title": "Separated at a Fair — After the First Step Fails",
+      "scenario": "You get separated from your class. You go to the meeting point, but no one's there yet. What do you do next?",
+      "options": [
+        { "key": "A", "text": "Wait and watch for a while", "primarySignal": "moderate", "secondarySignal": "moderate" },
+        { "key": "B", "text": "Ask a known adult for help", "primarySignal": "high", "secondarySignal": "high" },
+        { "key": "C", "text": "Look around the area and search for them", "primarySignal": "moderate", "secondarySignal": "moderate" },
+        { "key": "D", "text": "Go back to the same place and wait again", "primarySignal": "low", "secondarySignal": "low" }
+      ],
+      "type": "mcq",
+      "primaryParam": "STR",
+      "secondaryParam": "STR"
+    },
+    {
+      "id": "Q29",
+      "section": "situational_choice",
+      "title": "Friend Bends a Rule — Social Cost to Speaking Up",
+      "scenario": "Your friend skips a rule to win a board game faster. Saying something might make it awkward; not saying anything doesn't feel fair. What do you do?",
+      "options": [
+        { "key": "A", "text": "Speak up and point it out", "primarySignal": "high", "secondarySignal": "moderate" },
+        { "key": "B", "text": "Let it go this time", "primarySignal": "low", "secondarySignal": "low" },
+        { "key": "C", "text": "Suggest replaying the turn fairly", "primarySignal": "high", "secondarySignal": "high" },
+        { "key": "D", "text": "Mention the rule casually without blaming", "primarySignal": "moderate", "secondarySignal": "high" }
+      ],
+      "type": "mcq",
+      "primaryParam": "FB",
+      "secondaryParam": "STR"
+    },
+    {
+      "id": "Q30",
+      "section": "situational_choice",
+      "title": "Math Problem, Two Genuine Ways In",
+      "scenario": "A tricky problem could be solved by drawing a picture (slower, clearer) or trying numbers directly (faster, riskier). You must start within 10 seconds. Which do you do?",
+      "options": [
+        { "key": "A", "text": "Draw a picture", "primarySignal": "high", "secondarySignal": "moderate" },
+        { "key": "B", "text": "Try numbers directly", "primarySignal": "moderate", "secondarySignal": "high" }
+      ],
+      "type": "mcq",
+      "primaryParam": "STR",
+      "secondaryParam": "PER"
+    },
+    {
+      "id": "Q31",
+      "section": "situational_choice",
+      "title": "Distraction With a Real, Irreversible Cost",
+      "scenario": "You're doing homework and hear your favorite show start. If you stop now, you'll miss the first 5 minutes forever — reruns skip that part. What do you do?",
+      "options": [
+        { "key": "A", "text": "Keep working", "primarySignal": "high", "secondarySignal": "high" },
+        { "key": "B", "text": "Watch, planning to return to homework after", "primarySignal": "moderate", "secondarySignal": "moderate" },
+        { "key": "C", "text": "Stop and don't return", "primarySignal": "low", "secondarySignal": "low" }
+      ],
+      "type": "mcq",
+      "primaryParam": "ATT",
+      "secondaryParam": "PER"
+    },
+    {
+      "id": "Q32",
+      "section": "situational_choice",
+      "title": "Unfinished Group Work, Tomorrow's Deadline",
+      "scenario": "Your group presents tomorrow and one part isn't done. It's evening and everyone's tired. What do you do?",
+      "options": [
+        { "key": "A", "text": "Do a smaller, realistic version to finish tonight", "primarySignal": "high", "secondarySignal": "high" },
+        { "key": "B", "text": "Push to finish the whole thing anyway", "primarySignal": "moderate", "secondarySignal": "low" },
+        { "key": "C", "text": "Leave it and hope for time in the morning", "primarySignal": "low", "secondarySignal": "low" },
+        { "key": "D", "text": "Ask the teacher for an extension", "primarySignal": "moderate", "secondarySignal": "moderate" }
+      ],
+      "type": "mcq",
+      "primaryParam": "STR",
+      "secondaryParam": "PER"
+    },
+    {
+      "id": "Q33",
+      "section": "situational_choice",
+      "title": "Mistake With a Visible Emotional Reaction",
+      "scenario": "You accidentally knock over your sibling's block tower right as they finish it. They look upset. What do you do first?",
+      "options": [
+        { "key": "A", "text": "Apologize and check on them", "primarySignal": "high", "secondarySignal": "moderate" },
+        { "key": "B", "text": "Start fixing the tower immediately", "primarySignal": "moderate", "secondarySignal": "high" },
+        { "key": "C", "text": "Explain it was an accident", "primarySignal": "moderate", "secondarySignal": "moderate" },
+        { "key": "D", "text": "Walk away and come back later", "primarySignal": "low", "secondarySignal": "low" }
+      ],
+      "type": "mcq",
+      "primaryParam": "FB",
+      "secondaryParam": "STR"
+    },
+    {
+      "id": "Q34",
+      "section": "situational_choice",
+      "title": "Losing Repeatedly, With a Subtle Improvement Trend",
+      "scenario": "You're new to a sport. You lose every round, but each time by a little less. Do you notice, and what do you do next?",
+      "options": [
+        { "key": "A", "text": "I notice I'm improving — keep going!", "primarySignal": "high", "secondarySignal": "high" },
+        { "key": "B", "text": "I'm still losing — maybe try something else", "primarySignal": "low", "secondarySignal": "low" },
+        { "key": "C", "text": "I'm not sure if I'm getting better, but I'll keep trying", "primarySignal": "moderate", "secondarySignal": "high" },
+        { "key": "D", "text": "It doesn't matter, I want to quit", "primarySignal": "low", "secondarySignal": "low" }
+      ],
+      "type": "mcq",
+      "primaryParam": "FB",
+      "secondaryParam": "PER"
+    },
+    {
+      "id": "Q35",
+      "section": "situational_choice",
+      "title": "Sudden Decision During a Long Wait",
+      "scenario": "You're waiting in a long line, bored. Staff announce the ride closes in 3 minutes — you might not make it if you stay, or you could leave now for a shorter ride nearby. What do you do?",
+      "options": [
+        { "key": "A", "text": "Stay and hope to make it", "primarySignal": "high", "secondarySignal": "low" },
+        { "key": "B", "text": "Switch to the shorter ride now", "primarySignal": "moderate", "secondarySignal": "high" },
+        { "key": "C", "text": "Ask staff for more information first", "primarySignal": "moderate", "secondarySignal": "high" }
+      ],
+      "type": "mcq",
+      "primaryParam": "PER",
+      "secondaryParam": "STR"
+    },
+    {
+      "id": "Q36",
+      "section": "forced_choice",
+      "title": "Bridge vs. Long Way — Genuine Uncertainty",
+      "scenario": "A fast path crosses a bridge that might be wobbly — you're not sure. A slow path goes safely around. Which do you pick, without knowing for certain if the bridge is actually unsafe?",
+      "options": [
+        { "key": "A", "text": "Take the bridge (fast but uncertain)", "primarySignal": "high", "secondarySignal": "high" },
+        { "key": "B", "text": "Go around (slow but safe)", "primarySignal": "moderate", "secondarySignal": "moderate" }
+      ],
+      "type": "mcq",
+      "primaryParam": "STR",
+      "secondaryParam": "PER"
+    },
+    {
+      "id": "Q37",
+      "section": "forced_choice",
+      "title": "Guaranteed Small Reward vs. Uncertain Big Reward",
+      "scenario": "An unlocked chest has 10 coins for sure. A locked chest has either 50 coins or nothing, decided by a coin flip. Which do you pick?",
+      "options": [
+        { "key": "A", "text": "Guaranteed 10 coins", "primarySignal": "moderate", "secondarySignal": "moderate" },
+        { "key": "B", "text": "50-or-nothing gamble", "primarySignal": "high", "secondarySignal": "high" }
+      ],
+      "type": "mcq",
+      "primaryParam": "PER",
+      "secondaryParam": "STR"
+    },
+    {
+      "id": "Q38",
+      "section": "forced_choice",
+      "title": "Solo vs. Team — Explicit Trade-off",
+      "scenario": "Go on a mission alone (all credit is yours, but no help if stuck) or with a crew (help is always there, but credit is shared). Which do you pick?",
+      "options": [
+        { "key": "A", "text": "Solo — all credit, no help", "primarySignal": "moderate", "secondarySignal": "low" },
+        { "key": "B", "text": "Team — shared credit, always help", "primarySignal": "high", "secondarySignal": "high" }
+      ],
+      "type": "mcq",
+      "primaryParam": "FB",
+      "secondaryParam": "STR"
+    },
+    {
+      "id": "Q39",
+      "section": "forced_choice",
+      "title": "Hint Under Uncertainty, With a Timer",
+      "scenario": "You're stuck, with a timer running. A hint costs 5 points but you're not sure it will actually help. Do you use it, wait longer without it, or give up on this one?",
+      "options": [
+        { "key": "A", "text": "Use the hint", "primarySignal": "high", "secondarySignal": "moderate" },
+        { "key": "B", "text": "Wait it out", "primarySignal": "moderate", "secondarySignal": "high" },
+        { "key": "C", "text": "Give up", "primarySignal": "low", "secondarySignal": "low" }
+      ],
+      "type": "mcq",
+      "primaryParam": "FB",
+      "secondaryParam": "PER"
+    },
+    {
+      "id": "Q40",
+      "section": "forced_choice",
+      "title": "Fast-With-Mistakes vs. Slow-and-Careful",
+      "scenario": "In a maze, finishing fast might mean 2–3 wrong turns to undo; finishing slow means almost no wrong turns but takes much longer. There's no time limit today. Which do you pick?",
+      "options": [
+        { "key": "A", "text": "Fast, expect some mistakes", "primarySignal": "moderate", "secondarySignal": "high" },
+        { "key": "B", "text": "Slow, aim for none", "primarySignal": "high", "secondarySignal": "moderate" }
+      ],
+      "type": "mcq",
+      "primaryParam": "PER",
+      "secondaryParam": "STR"
+    },
+    {
+      "id": "Q41",
+      "section": "forced_choice",
+      "title": "Known-Okay Way vs. Unproven-Better Way",
+      "scenario": "You know a way to solve the puzzle that works but is slow. A friend says there's a faster way, but she hasn't tried it herself yet either. Which do you use?",
+      "options": [
+        { "key": "A", "text": "Use the known way", "primarySignal": "moderate", "secondarySignal": "low" },
+        { "key": "B", "text": "Try the unproven new way", "primarySignal": "high", "secondarySignal": "high" },
+        { "key": "C", "text": "Ask friend to demonstrate first", "primarySignal": "moderate", "secondarySignal": "high" }
+      ],
+      "type": "mcq",
+      "primaryParam": "STR",
+      "secondaryParam": "FB"
+    },
+    {
+      "id": "Q42",
+      "section": "forced_choice",
+      "title": "Finish Own Task vs. Help — Real Cost Attached",
+      "scenario": "You're almost done with your task. A friend is stuck and asks for help — but stopping means losing your progress and restarting later. Do you finish first, or help first?",
+      "options": [
+        { "key": "A", "text": "Finish first", "primarySignal": "moderate", "secondarySignal": "high" },
+        { "key": "B", "text": "Help first", "primarySignal": "moderate", "secondarySignal": "low" }
+      ],
+      "type": "mcq",
+      "primaryParam": "STR",
+      "secondaryParam": "PER"
+    },
+    {
+      "id": "Q43",
+      "section": "forced_choice",
+      "title": "Quick-Safe Guess vs. Slower Bigger-Reward Think",
+      "scenario": "A riddle: answer in 5 seconds for a small reward either way, or think for 30 seconds for a bigger reward, only if correct. Which do you choose?",
+      "options": [
+        { "key": "A", "text": "Quick, safe — small reward guaranteed", "primarySignal": "moderate", "secondarySignal": "moderate" },
+        { "key": "B", "text": "Slower — bigger reward if right", "primarySignal": "high", "secondarySignal": "high" }
+      ],
+      "type": "mcq",
+      "primaryParam": "PER",
+      "secondaryParam": "STR"
+    }
+  ]
+}
