@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 import questionBank from "@/data/questionBank4-5.json";
-import { QuestionAnswer, submitScores, computeScores } from "@/lib/questionBankScoring";
+import { QuestionAnswer, computeScores } from "@/lib/questionBankScoring";
 
 interface Question {
   id: string;
@@ -106,14 +106,10 @@ export default function StudentQuestionAssessment() {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     setSubmitting(true);
-    try {
-      await submitScores(answers);
-      router.push("/dashboard/student");
-    } catch {
-      router.push("/dashboard/student");
-    }
+    localStorage.setItem("assessment_scores", JSON.stringify(computeScores(answers)));
+    router.push("/dashboard/student/onboarding?done=true");
   };
 
   if (showResults) {
