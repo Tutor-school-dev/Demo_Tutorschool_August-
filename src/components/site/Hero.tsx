@@ -44,7 +44,7 @@ export default function Hero() {
               asChild
               className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white h-12 px-6 font-semibold shadow-[0_10px_30px_-8px_rgba(5,150,105,0.55)] group"
             >
-              <a href="/dashboard/student/onboarding">
+              <a href="/select-role">
                 Try Student Assessment
                 <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
               </a>
