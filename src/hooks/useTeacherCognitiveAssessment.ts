@@ -30,7 +30,12 @@ export const useTeacherCognitiveAssessment = () => {
         { parameter_key: "t8_patience", score: result.patience.final_score / 100, confidence: 0.8 },
       ];
 
-      await assessmentAPI.submit(params);
+      const isDemo = typeof window !== "undefined" && localStorage.getItem("demo_mode") === "true";
+      if (!isDemo) {
+        await assessmentAPI.submit(params);
+      } else {
+        localStorage.setItem("teacher_assessment_scores", JSON.stringify(params));
+      }
 
       return result;
     } catch {
