@@ -40,6 +40,11 @@ export default function TeacherDashboardPage() {
   useEffect(() => {
     async function loadData() {
       try {
+        if (localStorage.getItem("demo_mode") === "true") {
+          setTeacherName(localStorage.getItem("name") || "Demo Teacher");
+          setLoading(false);
+          return;
+        }
         const meCheck = await authAPI.me();
         if (meCheck.data.role !== "teacher") {
           router.push("/dashboard/student");

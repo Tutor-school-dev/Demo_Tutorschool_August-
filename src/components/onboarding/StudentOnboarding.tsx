@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -46,10 +46,8 @@ const STATES = [
 
 export default function StudentOnboarding() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
   const [data, setData] = useState<OnboardingData>({
     studentName: "",
     educationLevel: "Grade 4-5",
@@ -64,63 +62,6 @@ export default function StudentOnboarding() {
     pincode: "",
   });
 
-  useEffect(() => {
-    if (searchParams.get("done") === "true") {
-      setDone(true);
-    }
-  }, [searchParams]);
-
-  if (done) {
-    const scores = JSON.parse(localStorage.getItem("assessment_scores") || "{}");
-    const PARAM_LABELS: Record<string, string> = {
-      ATT: "Attention & Focus",
-      WM: "Working Memory",
-      FB: "Feedback Sensitivity",
-      STR: "Strategy & Reasoning",
-      ABS: "Abstraction",
-      PER: "Persistence & Pacing",
-      PAC: "Self-Pacing",
-    };
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl p-8 text-center">
-          <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Assessment Complete!</h2>
-          <p className="text-gray-500 mb-6">Your cognitive learning profile has been generated.</p>
-          {Object.keys(scores).length > 0 && (
-            <div className="space-y-3 text-left mb-6">
-              {Object.entries(scores).map(([param, val]: [string, any]) => (
-                <div key={param} className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-gray-600 w-40">
-                    {PARAM_LABELS[param] || param}
-                  </span>
-                  <div className="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-emerald-500 rounded-full transition-all duration-500"
-                      style={{ width: `${val.score * 100}%` }}
-                    />
-                  </div>
-                  <span className="text-sm font-bold text-gray-700 w-12 text-right">
-                    {Math.round(val.score * 100)}%
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-          <button
-            onClick={() => { setDone(false); router.push("/dashboard/student/onboarding"); }}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 rounded-lg h-12 text-white font-medium transition-colors"
-          >
-            Start Again
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   const updateField = <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => {
     setData((prev) => ({ ...prev, [key]: value }));

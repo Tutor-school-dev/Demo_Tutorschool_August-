@@ -12,6 +12,10 @@ export default function StudentDashboardPage() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    if (localStorage.getItem("demo_mode") === "true") {
+      setReady(true);
+      return;
+    }
     const token = Cookies.get("jwt_Token");
     if (!token) {
       router.push("/auth?model=student");

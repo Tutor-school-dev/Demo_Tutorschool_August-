@@ -45,6 +45,42 @@ export default function StudentDashboard() {
 
   useEffect(() => {
     async function loadData() {
+      if (localStorage.getItem("demo_mode") === "true") {
+        const stored = localStorage.getItem("assessment_scores");
+        if (stored) {
+          const scores = JSON.parse(stored);
+          const mockProfile: StudentProfileResponse = {
+            id: "demo",
+            user_id: "demo",
+            grade_level: 5,
+            school: null,
+            subjects: null,
+            learning_goals: null,
+            scores: {
+              s1_attention_stability: scores.ATT ? { point_estimate: scores.ATT.score, confidence: scores.ATT.confidence, observations: scores.ATT.observations } : null,
+              s2_working_memory: scores.WM ? { point_estimate: scores.WM.score, confidence: scores.WM.confidence, observations: scores.WM.observations } : null,
+              s3_feedback_sensitivity: scores.FB ? { point_estimate: scores.FB.score, confidence: scores.FB.confidence, observations: scores.FB.observations } : null,
+              s4_motivation: scores.STR ? { point_estimate: scores.STR.score, confidence: scores.STR.confidence, observations: scores.STR.observations } : null,
+              s5_abstraction: scores.ABS ? { point_estimate: scores.ABS.score, confidence: scores.ABS.confidence, observations: scores.ABS.observations } : null,
+              s6_developmental_stage: scores.PER ? { point_estimate: scores.PER.score, confidence: scores.PER.confidence, observations: scores.PER.observations } : null,
+              s7_persistence: scores.PAC ? { point_estimate: scores.PAC.score, confidence: scores.PAC.confidence, observations: scores.PAC.observations } : null,
+            },
+          };
+          setProfile(mockProfile);
+          setTopMatch({
+            teacher_id: "demo-teacher",
+            teacher_name: "Ms. Priya Sharma",
+            compatibility_score: 0.87,
+            match_confidence: 0.82,
+            offer_probability: 0.9,
+            exploration_flag: false,
+            rank: 1,
+            breakdown: {},
+          });
+        }
+        setLoading(false);
+        return;
+      }
       try {
         const [profileRes, matchRes] = await Promise.all([
           studentAPI.getProfile(),

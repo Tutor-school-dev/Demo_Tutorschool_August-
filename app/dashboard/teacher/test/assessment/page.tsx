@@ -11,6 +11,10 @@ export default function TeacherAssessmentPage() {
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
+    if (localStorage.getItem("demo_mode") === "true") {
+      setIsAuthorized(true);
+      return;
+    }
     const token = Cookies.get("jwt_Token");
     if (!token) {
       router.push("/auth?model=teacher");

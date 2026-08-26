@@ -2,9 +2,24 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 export default function SelectRolePage() {
   const router = useRouter();
+
+  const selectRole = (role: "Student" | "Teacher") => {
+    Cookies.set("jwt_Token", "demo_token", { expires: 1 });
+    localStorage.setItem("model", role);
+    localStorage.setItem("demo_mode", "true");
+    localStorage.setItem("name", role === "Student" ? "Demo Student" : "Demo Teacher");
+    localStorage.setItem("email", role === "Student" ? "student@demo.tutorschool.in" : "teacher@demo.tutorschool.in");
+
+    if (role === "Student") {
+      router.push("/dashboard/student/onboarding");
+    } else {
+      router.push("/dashboard/teacher/test/assessment");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center p-4">
@@ -21,7 +36,7 @@ export default function SelectRolePage() {
 
         <div className="space-y-4">
           <button
-            onClick={() => router.push("/dashboard/student/onboarding")}
+            onClick={() => selectRole("Student")}
             className="w-full p-5 rounded-xl border-2 border-gray-200 hover:border-emerald-500 hover:bg-emerald-50 transition-all group"
           >
             <div className="text-3xl mb-2">🎓</div>
@@ -30,7 +45,7 @@ export default function SelectRolePage() {
           </button>
 
           <button
-            onClick={() => router.push("/dashboard/teacher/test/assessment")}
+            onClick={() => selectRole("Teacher")}
             className="w-full p-5 rounded-xl border-2 border-gray-200 hover:border-emerald-500 hover:bg-emerald-50 transition-all group"
           >
             <div className="text-3xl mb-2">👩‍🏫</div>

@@ -109,7 +109,7 @@ export default function StudentQuestionAssessment() {
   const handleSubmit = () => {
     setSubmitting(true);
     localStorage.setItem("assessment_scores", JSON.stringify(computeScores(answers)));
-    router.push("/dashboard/student/onboarding?done=true");
+    router.push("/dashboard/student");
   };
 
   if (showResults) {
