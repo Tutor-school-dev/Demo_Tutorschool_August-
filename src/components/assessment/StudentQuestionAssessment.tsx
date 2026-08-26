@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 import questionBank from "@/data/questionBank4-5.json";
 import { QuestionAnswer, computeScores } from "@/lib/questionBankScoring";
+import RescueMissionGame from "./RescueMissionGame";
 
 interface Question {
   id: string;
@@ -61,8 +62,11 @@ const PARAM_LABELS: Record<string, string> = {
   PAC: "Self-Pacing",
 };
 
+const TOTAL_QUESTIONS = 15;
+
 export default function StudentQuestionAssessment() {
   const router = useRouter();
+  const [gameComplete, setGameComplete] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<QuestionAnswer[]>([]);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
@@ -70,11 +74,27 @@ export default function StudentQuestionAssessment() {
   const [submitting, setSubmitting] = useState(false);
 
   const questions = useMemo(() => {
-    return selectQuestions(questionBank.questions as Question[], 15);
+    return selectQuestions(questionBank.questions as Question[], 14);
   }, []);
 
+  const handleGameComplete = (answer: QuestionAnswer) => {
+    setAnswers([answer]);
+    setGameComplete(true);
+  };
+
+  if (!gameComplete) {
+    return (
+      <RescueMissionGame
+        onComplete={handleGameComplete}
+        questionNumber={1}
+        totalQuestions={TOTAL_QUESTIONS}
+      />
+    );
+  }
+
   const currentQuestion = questions[currentIndex];
-  const progress = ((currentIndex + 1) / questions.length) * 100;
+  const displayIndex = currentIndex + 2;
+  const progress = (displayIndex / TOTAL_QUESTIONS) * 100;
 
   const handleSelect = (key: string) => {
     setSelectedKey(key);
@@ -159,7 +179,7 @@ export default function StudentQuestionAssessment() {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-gray-500">
-              Question {currentIndex + 1} of {questions.length}
+              Question {displayIndex} of {TOTAL_QUESTIONS}
             </span>
             <span className="text-sm text-emerald-600 font-medium">
               {Math.round(progress)}%
@@ -210,7 +230,7 @@ export default function StudentQuestionAssessment() {
           disabled={!selectedKey}
           className="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-lg h-12 text-white font-medium transition-colors"
         >
-          {currentIndex === questions.length - 1 ? "Finish" : "Next"}
+          {displayIndex === TOTAL_QUESTIONS ? "Finish" : "Next"}
         </button>
       </div>
     </div>
