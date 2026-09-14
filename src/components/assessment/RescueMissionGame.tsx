@@ -107,11 +107,9 @@ function DragOverlayCard({ card }: { card: ActionCard }) {
 
 interface RescueMissionGameProps {
   onComplete: (answer: QuestionAnswer) => void;
-  questionNumber: number;
-  totalQuestions: number;
 }
 
-export default function RescueMissionGame({ onComplete, questionNumber, totalQuestions }: RescueMissionGameProps) {
+export default function RescueMissionGame({ onComplete }: RescueMissionGameProps) {
   const [slot1, setSlot1] = useState<ActionCard | null>(null);
   const [slot2, setSlot2] = useState<ActionCard | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -168,32 +166,15 @@ export default function RescueMissionGame({ onComplete, questionNumber, totalQue
 
   const activeCard = ACTION_CARDS.find((c) => c.id === activeId) || null;
   const canProceed = slot1 !== null && slot2 !== null;
-  const progress = (questionNumber / totalQuestions) * 100;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center p-4">
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 sm:p-8">
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-500">
-              Question {questionNumber} of {totalQuestions}
-            </span>
-            <span className="text-sm text-emerald-600 font-medium">
-              {Math.round(progress)}%
-            </span>
-          </div>
-          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-emerald-500 rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+        <div className="mb-4 text-center">
+          <h3 className="text-xl font-bold text-gray-800 flex items-center justify-center gap-2">
             <span className="text-2xl">🐱</span> Rescue Mission
           </h3>
+          <p className="text-sm text-gray-500 mt-1">Cognitive Learning Activity</p>
         </div>
 
         <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden mb-4 border border-gray-200">
@@ -240,7 +221,7 @@ export default function RescueMissionGame({ onComplete, questionNumber, totalQue
           disabled={!canProceed}
           className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-lg h-12 text-white font-medium transition-colors"
         >
-          Next
+          Complete
         </button>
       </div>
     </div>
