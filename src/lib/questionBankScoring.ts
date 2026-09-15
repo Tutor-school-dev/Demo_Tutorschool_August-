@@ -62,8 +62,11 @@ export function computeScores(answers: QuestionAnswer[]) {
     accumulators[p] = { weightedSum: 0, totalWeight: 0, observations: 0 };
   }
 
+  const indicatorLog: { questionId: string; indicators: BehavioralIndicator[]; rawMetrics?: Record<string, number> }[] = [];
+
   for (const answer of answers) {
     if (answer.indicators && answer.indicators.length > 0) {
+      indicatorLog.push({ questionId: answer.questionId, indicators: answer.indicators, rawMetrics: answer.rawMetrics });
       for (const ind of answer.indicators) {
         const acc = accumulators[ind.param];
         if (!acc) continue;
@@ -120,6 +123,35 @@ export function computeScores(answers: QuestionAnswer[]) {
     } else {
       scores[param] = { score: PRIOR, confidence: 0.3, observations: 0 };
     }
+  }
+
+  if (typeof window !== "undefined" && localStorage.getItem("demo_mode") === "true") {
+    const debugData = {
+      answers: answers.map(a => ({ id: a.questionId, key: a.selectedKey })),
+      indicators: indicatorLog,
+      accumulators: Object.fromEntries(
+        Object.entries(accumulators).map(([k, v]) => [k, {
+          rawScore: v.totalWeight > 0 ? Math.round((v.weightedSum / v.totalWeight) * 1000) / 1000 : null,
+          totalWeight: Math.round(v.totalWeight * 100) / 100,
+          observations: v.observations,
+        }])
+      ),
+      finalScores: scores,
+    };
+    console.group("%c[VYGOT Scoring] Assessment Results", "color: #059669; font-weight: bold; font-size: 14px");
+    console.log("%cAnswers:", "font-weight: bold", debugData.answers);
+    console.log("%cIndicators per game:", "font-weight: bold");
+    for (const entry of indicatorLog) {
+      console.log(`  ${entry.questionId}:`, entry.indicators.map(i => `${i.param}.${i.metric}=${i.value.toFixed(3)} (w=${i.weight})`));
+      if (entry.rawMetrics) console.log(`    raw:`, entry.rawMetrics);
+    }
+    console.log("%cAccumulators (pre-pooling):", "font-weight: bold", debugData.accumulators);
+    console.log("%cFinal Scores (post-pooling):", "font-weight: bold", scores);
+    console.table(Object.fromEntries(
+      Object.entries(scores).map(([k, v]) => [k, { score: (v.score * 100).toFixed(1) + "%", confidence: (v.confidence * 100).toFixed(0) + "%", obs: v.observations }])
+    ));
+    console.groupEnd();
+    localStorage.setItem("assessment_debug", JSON.stringify(debugData));
   }
 
   return scores;

@@ -246,6 +246,8 @@ export default function StudentDashboard() {
         </Card>
       </div>
 
+      {localStorage.getItem("demo_mode") === "true" && <ScoringBreakdown />}
+
       <Card className="mt-6 border-0 shadow-sm">
         <CardHeader>
           <CardTitle className="text-lg font-semibold">Recent Sessions</CardTitle>
@@ -257,5 +259,127 @@ export default function StudentDashboard() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+const PARAM_NAMES: Record<string, string> = {
+  ATT: "Attention (ATT)",
+  WM: "Working Memory (WM)",
+  FB: "Feedback Sensitivity (FB)",
+  STR: "Strategy/Motivation (STR)",
+  ABS: "Abstraction (ABS)",
+  PER: "Developmental Stage (PER)",
+  PAC: "Persistence/Grit (PAC)",
+};
+
+function ScoringBreakdown() {
+  const [open, setOpen] = useState(false);
+  const raw = localStorage.getItem("assessment_debug");
+  if (!raw) return null;
+
+  let debug: {
+    indicators: { questionId: string; indicators: { param: string; metric: string; value: number; weight: number }[]; rawMetrics?: Record<string, number> }[];
+    accumulators: Record<string, { rawScore: number | null; totalWeight: number; observations: number }>;
+    finalScores: Record<string, { score: number; confidence: number; observations: number }>;
+  };
+  try { debug = JSON.parse(raw); } catch { return null; }
+
+  return (
+    <Card className="mt-6 border-0 shadow-sm bg-slate-50">
+      <CardHeader className="cursor-pointer" onClick={() => setOpen(!open)}>
+        <CardTitle className="text-lg font-semibold flex items-center justify-between">
+          <span>Scoring Breakdown (Demo)</span>
+          <span className="text-sm font-normal text-slate-400">{open ? "Hide" : "Show"}</span>
+        </CardTitle>
+      </CardHeader>
+      {open && (
+        <CardContent className="space-y-6">
+          <div>
+            <h4 className="text-sm font-semibold text-slate-700 mb-3">Final Scores (with Bayesian pooling)</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {Object.entries(debug.finalScores).map(([param, data]) => (
+                <div key={param} className="flex items-center gap-3 bg-white rounded-lg px-3 py-2">
+                  <span className="text-xs font-mono font-bold text-emerald-700 w-8">{param}</span>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs text-slate-500">{PARAM_NAMES[param] || param}</span>
+                      <span className="text-sm font-bold text-slate-800">{Math.round(data.score * 100)}%</span>
+                    </div>
+                    <div className="w-full bg-slate-200 rounded-full h-2">
+                      <div
+                        className="h-2 rounded-full bg-emerald-500 transition-all"
+                        style={{ width: `${Math.round(data.score * 100)}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between mt-0.5">
+                      <span className="text-[10px] text-slate-400">conf: {Math.round(data.confidence * 100)}%</span>
+                      <span className="text-[10px] text-slate-400">{data.observations} obs</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-semibold text-slate-700 mb-3">Per-Game Indicators</h4>
+            <div className="space-y-3">
+              {debug.indicators.map((entry) => (
+                <div key={entry.questionId} className="bg-white rounded-lg p-3">
+                  <p className="text-xs font-bold text-slate-700 mb-2">{entry.questionId}</p>
+                  <div className="space-y-1">
+                    {entry.indicators.map((ind, i) => (
+                      <div key={i} className="flex items-center gap-2 text-xs">
+                        <span className="font-mono text-emerald-600 w-6">{ind.param}</span>
+                        <span className="text-slate-500 w-28">{ind.metric}</span>
+                        <div className="flex-1 bg-slate-100 rounded-full h-1.5">
+                          <div
+                            className="h-1.5 rounded-full bg-teal-400"
+                            style={{ width: `${Math.round(ind.value * 100)}%` }}
+                          />
+                        </div>
+                        <span className="font-mono text-slate-700 w-12 text-right">{(ind.value * 100).toFixed(1)}%</span>
+                        <span className="text-slate-400 w-10 text-right">w={ind.weight}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {entry.rawMetrics && (
+                    <p className="text-[10px] text-slate-400 mt-1.5">
+                      raw: {Object.entries(entry.rawMetrics).map(([k, v]) => `${k}=${v}`).join(", ")}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-semibold text-slate-700 mb-3">Pre-Pooling Accumulators</h4>
+            <div className="bg-white rounded-lg overflow-hidden">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="bg-slate-100">
+                    <th className="px-3 py-1.5 text-left font-semibold text-slate-600">Param</th>
+                    <th className="px-3 py-1.5 text-right font-semibold text-slate-600">Raw Score</th>
+                    <th className="px-3 py-1.5 text-right font-semibold text-slate-600">Total Weight</th>
+                    <th className="px-3 py-1.5 text-right font-semibold text-slate-600">Observations</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(debug.accumulators).map(([param, acc]) => (
+                    <tr key={param} className="border-t border-slate-100">
+                      <td className="px-3 py-1.5 font-mono font-bold text-emerald-700">{param}</td>
+                      <td className="px-3 py-1.5 text-right text-slate-700">{acc.rawScore !== null ? (acc.rawScore * 100).toFixed(1) + "%" : "—"}</td>
+                      <td className="px-3 py-1.5 text-right text-slate-700">{acc.totalWeight}</td>
+                      <td className="px-3 py-1.5 text-right text-slate-700">{acc.observations}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </CardContent>
+      )}
+    </Card>
   );
 }
