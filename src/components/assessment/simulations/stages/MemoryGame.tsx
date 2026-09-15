@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { QuestionAnswer } from "@/lib/questionBankScoring";
+import { QuestionAnswer, BehavioralIndicator } from "@/lib/questionBankScoring";
 import { MemoryConfig } from "../themes";
 
 interface MemoryGameProps {
@@ -181,32 +181,30 @@ export default function MemoryGame({
 
   // Calculate and submit results
   const handleFinish = useCallback(() => {
-    const getSpanSignal = (span: number): "high" | "moderate" | "low" => {
-      if (span >= 5) return "high";
-      if (span >= 3) return "moderate";
-      return "low";
-    };
-
+    const spanNorm = Math.min(maxSpan / 6, 1.0);
+    const roundsCompleted = round + (roundFailed ? 0 : 1);
+    const roundCompletion = roundsCompleted / ROUNDS.length;
     const avgRt =
       reactionTimes.length > 0
         ? reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length
         : Infinity;
-
-    const getRtSignal = (rt: number): "high" | "moderate" | "low" => {
-      if (rt < FAST_RT_THRESHOLD) return "high";
-      if (rt < SLOW_RT_THRESHOLD) return "moderate";
-      return "low";
-    };
+    const recallSpeed = Math.max(0, Math.min(1, 1 - (avgRt - 500) / 4500));
 
     onComplete({
       questionId: `${themeId}-memory`,
-      selectedKey: getSpanSignal(maxSpan),
+      selectedKey: maxSpan >= 5 ? "high" : maxSpan >= 3 ? "moderate" : "low",
       primaryParam: "WM",
       secondaryParam: "ATT",
-      primarySignal: getSpanSignal(maxSpan),
-      secondarySignal: getRtSignal(avgRt),
+      primarySignal: maxSpan >= 5 ? "high" : maxSpan >= 3 ? "moderate" : "low",
+      secondarySignal: avgRt < 2000 ? "high" : avgRt < 4000 ? "moderate" : "low",
+      indicators: [
+        { param: "WM", metric: "spanNorm", value: spanNorm, weight: 1.0 },
+        { param: "WM", metric: "roundCompletion", value: roundCompletion, weight: 0.6 },
+        { param: "ATT", metric: "recallSpeed", value: recallSpeed, weight: 0.5 },
+      ],
+      rawMetrics: { maxSpan, roundsCompleted, avgReactionTimeMs: avgRt === Infinity ? -1 : Math.round(avgRt) },
     });
-  }, [themeId, maxSpan, reactionTimes, onComplete]);
+  }, [themeId, maxSpan, round, roundFailed, reactionTimes, onComplete]);
 
   // Results view
   if (phase === "results") {

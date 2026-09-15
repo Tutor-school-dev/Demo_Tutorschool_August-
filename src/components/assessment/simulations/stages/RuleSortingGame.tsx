@@ -143,18 +143,24 @@ export default function RuleSortingGame({
   );
 
   const computeResult = useCallback((): QuestionAnswer => {
-    const allErrors = phase1Errors + phase2Errors;
+    const totalTrials = currentIndex + 1;
+    const totalErrors = phase1Errors + phase2Errors;
+
+    const adaptSpeed = switched && adapted && trialsToAdapt !== null
+      ? Math.max(0, Math.min(1, 1 - (trialsToAdapt - 1) / 9))
+      : 0.1;
+    const phase2Acc = switched && phase2Trials > 0
+      ? 1 - phase2Errors / phase2Trials
+      : 0.3;
+    const overallAcc = totalTrials > 0 ? 1 - totalErrors / totalTrials : 0.5;
 
     let primarySignal: string;
     if (switched && adapted && trialsToAdapt !== null) {
-      primarySignal =
-        trialsToAdapt <= 3 ? "high" : trialsToAdapt <= 6 ? "moderate" : "low";
+      primarySignal = trialsToAdapt <= 3 ? "high" : trialsToAdapt <= 6 ? "moderate" : "low";
     } else {
       primarySignal = "low";
     }
-
-    const secondarySignal =
-      allErrors <= 3 ? "high" : allErrors <= 6 ? "moderate" : "low";
+    const secondarySignal = totalErrors <= 3 ? "high" : totalErrors <= 6 ? "moderate" : "low";
 
     return {
       questionId: `${themeId}-sorting`,
@@ -163,10 +169,18 @@ export default function RuleSortingGame({
       secondaryParam: "ABS",
       primarySignal,
       secondarySignal,
+      indicators: [
+        { param: "FB", metric: "adaptSpeed", value: adaptSpeed, weight: 1.0 },
+        { param: "FB", metric: "phase2Accuracy", value: phase2Acc, weight: 0.7 },
+        { param: "ABS", metric: "overallAccuracy", value: overallAcc, weight: 0.5 },
+      ],
+      rawMetrics: { totalTrials, phase1Errors, phase2Errors, switched: switched ? 1 : 0, adapted: adapted ? 1 : 0, trialsToAdapt: trialsToAdapt ?? -1 },
     };
   }, [
+    currentIndex,
     phase1Errors,
     phase2Errors,
+    phase2Trials,
     switched,
     adapted,
     trialsToAdapt,

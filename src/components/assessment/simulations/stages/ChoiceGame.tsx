@@ -47,22 +47,26 @@ export default function ChoiceGame({
 
   const finishGame = useCallback(
     (chosenName: string, planMs: number, didBonus: boolean) => {
+      const engagement = didBonus ? 0.9 : (planMs > 2000 ? 0.6 : 0.25);
+      const planningCare = Math.max(0.1, Math.min(1.0, planMs / 5000));
+
       let signal: string;
-      if (didBonus) {
-        signal = "high";
-      } else if (planMs > 2000) {
-        signal = "moderate";
-      } else {
-        signal = "low";
-      }
+      if (didBonus) signal = "high";
+      else if (planMs > 2000) signal = "moderate";
+      else signal = "low";
 
       onComplete({
         questionId: `${themeId}-choice`,
         selectedKey: chosenName,
         primaryParam: "PAC",
-        secondaryParam: "PER",
+        secondaryParam: "PAC",
         primarySignal: signal,
         secondarySignal: signal,
+        indicators: [
+          { param: "PAC", metric: "engagement", value: engagement, weight: 0.8 },
+          { param: "PAC", metric: "planningCare", value: planningCare, weight: 0.5 },
+        ],
+        rawMetrics: { planningTimeMs: Math.round(planMs), tookBonus: didBonus ? 1 : 0 },
       });
     },
     [themeId, onComplete]

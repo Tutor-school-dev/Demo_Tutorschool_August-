@@ -129,7 +129,7 @@ export default function PuzzleGame({
       return next;
     });
     setSelectedSlot(0);
-  }, [gameOver, currentGuess, secret, history]);
+  }, [gameOver, currentGuess, secret, history, revealedPositions]);
 
   const handleHint = useCallback(() => {
     if (gameOver || hintsUsed >= MAX_HINTS) return;
@@ -161,37 +161,35 @@ export default function PuzzleGame({
   }, [gameOver]);
 
   const computeResult = useCallback((): QuestionAnswer => {
+    const perseverance = solved
+      ? (hintsUsed === 0 ? 0.85 : 0.7 + 0.15 * (1 - hintsUsed / MAX_HINTS))
+      : (skipped ? 0.1 : 0.4);
+    const efficiency = solved
+      ? Math.max(0, Math.min(1, 1 - (attempts - 1) / 7))
+      : 0.15;
+
     let primarySignal: string;
-    if (solved && hintsUsed === 0) {
-      primarySignal = "high";
-    } else if (solved && hintsUsed > 0) {
-      primarySignal = "moderate";
-    } else {
-      primarySignal = "low";
-    }
+    if (solved && hintsUsed === 0) primarySignal = "high";
+    else if (solved) primarySignal = "moderate";
+    else primarySignal = "low";
 
     let secondarySignal: string;
-    if (solved && attempts <= 4) {
-      secondarySignal = "high";
-    } else if (solved && attempts <= 7) {
-      secondarySignal = "moderate";
-    } else {
-      secondarySignal = "low";
-    }
+    if (solved && attempts <= 4) secondarySignal = "high";
+    else if (solved && attempts <= 7) secondarySignal = "moderate";
+    else secondarySignal = "low";
 
     return {
       questionId: `${themeId}-puzzle`,
-      selectedKey: solved
-        ? hintsUsed > 0
-          ? "solved-with-hints"
-          : "solved"
-        : skipped
-        ? "skipped"
-        : "failed",
-      primaryParam: "PER",
+      selectedKey: solved ? (hintsUsed > 0 ? "solved-with-hints" : "solved") : skipped ? "skipped" : "failed",
+      primaryParam: "PAC",
       secondaryParam: "STR",
       primarySignal,
       secondarySignal,
+      indicators: [
+        { param: "PAC", metric: "perseverance", value: perseverance, weight: 1.0 },
+        { param: "STR", metric: "efficiency", value: efficiency, weight: 0.7 },
+      ],
+      rawMetrics: { attempts, hintsUsed, solved: solved ? 1 : 0, skipped: skipped ? 1 : 0 },
     };
   }, [solved, hintsUsed, attempts, skipped, themeId]);
 

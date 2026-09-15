@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { QuestionAnswer } from "@/lib/questionBankScoring";
+import { QuestionAnswer, BehavioralIndicator } from "@/lib/questionBankScoring";
 import { AttentionConfig } from "../themes";
 
 interface AttentionGameProps {
@@ -173,24 +173,22 @@ export default function AttentionGame({
   const handleFinish = useCallback(() => {
     const { score: s, commissions: c, totalShown: t } = statsRef.current;
     const accuracy = t > 0 ? s / t : 0;
-    const adjustedScore = t > 0 ? (s - c) / t : 0;
-
-    const getSignal = (val: number): "high" | "moderate" | "low" => {
-      if (val > 0.8) return "high";
-      if (val >= 0.5) return "moderate";
-      return "low";
-    };
-
-    const accuracyBucket =
-      accuracy > 0.8 ? "high" : accuracy >= 0.5 ? "moderate" : "low";
+    const inhibition = t > 0 ? 1 - c / t : 1;
+    const adjustedScore = t > 0 ? Math.max(0, (s - c) / t) : 0;
 
     onComplete({
       questionId: `${themeId}-attention`,
-      selectedKey: accuracyBucket,
+      selectedKey: accuracy > 0.8 ? "high" : accuracy >= 0.5 ? "moderate" : "low",
       primaryParam: "ATT",
       secondaryParam: "WM",
-      primarySignal: getSignal(accuracy),
-      secondarySignal: getSignal(adjustedScore),
+      primarySignal: accuracy > 0.8 ? "high" : accuracy >= 0.5 ? "moderate" : "low",
+      secondarySignal: adjustedScore > 0.8 ? "high" : adjustedScore >= 0.5 ? "moderate" : "low",
+      indicators: [
+        { param: "ATT", metric: "accuracy", value: accuracy, weight: 1.0 },
+        { param: "ATT", metric: "inhibition", value: inhibition, weight: 0.7 },
+        { param: "WM", metric: "adjustedScore", value: adjustedScore, weight: 0.5 },
+      ],
+      rawMetrics: { correctTaps: s, commissions: c, misses: statsRef.current.misses, totalShown: t },
     });
   }, [themeId, onComplete]);
 

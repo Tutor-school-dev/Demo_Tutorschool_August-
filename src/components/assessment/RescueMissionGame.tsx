@@ -147,18 +147,26 @@ export default function RescueMissionGame({ onComplete }: RescueMissionGameProps
   const handleNext = () => {
     if (!slot1) return;
 
+    const signalToValue = (s: string) => s === "high" ? 0.8 : s === "moderate" ? 0.5 : 0.2;
+    const strategyQuality = signalToValue(slot1.primarySignal);
+    const hasSynergy = slot2 && slot1.primarySignal !== "low" && slot2.primarySignal !== "low";
+    const planSynergy = hasSynergy ? 0.8 : 0.3;
+
     let secondarySignal = slot1.secondarySignal;
-    if (slot2 && slot1.primarySignal !== "low" && slot2.primarySignal !== "low") {
-      if (secondarySignal === "moderate") secondarySignal = "high";
-    }
+    if (hasSynergy && secondarySignal === "moderate") secondarySignal = "high";
 
     const answer: QuestionAnswer = {
       questionId: "Q46",
       selectedKey: slot1.id,
       primaryParam: "STR",
-      secondaryParam: "PER",
+      secondaryParam: "PAC",
       primarySignal: slot1.primarySignal,
       secondarySignal,
+      indicators: [
+        { param: "STR", metric: "strategyQuality", value: strategyQuality, weight: 1.0 },
+        { param: "STR", metric: "planSynergy", value: planSynergy, weight: 0.5 },
+      ],
+      rawMetrics: { slot1Signal: strategyQuality, slot2Signal: slot2 ? signalToValue(slot2.primarySignal) : 0 },
     };
 
     onComplete(answer);
