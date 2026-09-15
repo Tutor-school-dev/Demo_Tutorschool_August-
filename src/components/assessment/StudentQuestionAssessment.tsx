@@ -4,20 +4,22 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { QuestionAnswer, computeScores } from "@/lib/questionBankScoring";
 import RescueMissionGame from "./RescueMissionGame";
+import SimulationSelector from "./simulations/SimulationSelector";
+import SimulationFlow from "./simulations/SimulationFlow";
+import { SimulationTheme } from "./simulations/themes";
+
+type Phase = "rescue" | "select" | "simulation";
 
 export default function StudentQuestionAssessment() {
   const router = useRouter();
   const [grade, setGrade] = useState<string | null>(null);
+  const [phase, setPhase] = useState<Phase>("rescue");
+  const [answers, setAnswers] = useState<QuestionAnswer[]>([]);
+  const [selectedTheme, setSelectedTheme] = useState<SimulationTheme | null>(null);
 
   useEffect(() => {
     setGrade(localStorage.getItem("student_grade"));
   }, []);
-
-  const handleGameComplete = (answer: QuestionAnswer) => {
-    const scores = computeScores([answer]);
-    localStorage.setItem("assessment_scores", JSON.stringify(scores));
-    router.push("/dashboard/student");
-  };
 
   if (grade === null) return null;
 
@@ -41,5 +43,34 @@ export default function StudentQuestionAssessment() {
     );
   }
 
-  return <RescueMissionGame onComplete={handleGameComplete} />;
+  const handleRescueComplete = (answer: QuestionAnswer) => {
+    setAnswers([answer]);
+    setPhase("select");
+  };
+
+  const handleThemeSelect = (theme: SimulationTheme) => {
+    setSelectedTheme(theme);
+    setPhase("simulation");
+  };
+
+  const handleSimulationComplete = (simAnswers: QuestionAnswer[]) => {
+    const allAnswers = [...answers, ...simAnswers];
+    const scores = computeScores(allAnswers);
+    localStorage.setItem("assessment_scores", JSON.stringify(scores));
+    router.push("/dashboard/student");
+  };
+
+  if (phase === "rescue") {
+    return <RescueMissionGame onComplete={handleRescueComplete} />;
+  }
+
+  if (phase === "select") {
+    return <SimulationSelector onSelect={handleThemeSelect} />;
+  }
+
+  if (phase === "simulation" && selectedTheme) {
+    return <SimulationFlow theme={selectedTheme} onComplete={handleSimulationComplete} />;
+  }
+
+  return null;
 }
