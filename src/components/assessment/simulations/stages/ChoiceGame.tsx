@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import type { QuestionAnswer } from "@/lib/questionBankScoring";
 import type { ChoiceConfig } from "../themes";
 
@@ -44,6 +44,15 @@ export default function ChoiceGame({
   const pathsShownAt = useRef<number>(Date.now());
   const planningTimeMs = useRef<number>(0);
   const tookBonus = useRef<boolean>(false);
+  const outcomeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const bonusIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (outcomeTimerRef.current) clearTimeout(outcomeTimerRef.current);
+      if (bonusIntervalRef.current) clearInterval(bonusIntervalRef.current);
+    };
+  }, []);
 
   const finishGame = useCallback(
     (chosenName: string, planMs: number, didBonus: boolean) => {
@@ -80,7 +89,7 @@ export default function ChoiceGame({
       setOutcomeMsg(getOutcomeMessage(config.paths[index].name));
       setPhase("outcome");
 
-      setTimeout(() => {
+      outcomeTimerRef.current = setTimeout(() => {
         setPhase("bonus");
       }, 2000);
     },
@@ -92,11 +101,11 @@ export default function ChoiceGame({
     setBonusActive(true);
 
     let remaining = 3;
-    const interval = setInterval(() => {
+    bonusIntervalRef.current = setInterval(() => {
       remaining -= 1;
       setBonusCountdown(remaining);
       if (remaining <= 0) {
-        clearInterval(interval);
+        if (bonusIntervalRef.current) clearInterval(bonusIntervalRef.current);
         finishGame(
           config.paths[chosenIndex!].name,
           planningTimeMs.current,

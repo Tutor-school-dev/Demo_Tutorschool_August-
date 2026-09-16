@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { QuestionAnswer, BehavioralIndicator } from "@/lib/questionBankScoring";
+import { QuestionAnswer } from "@/lib/questionBankScoring";
 import { AttentionConfig } from "../themes";
 
 interface AttentionGameProps {
@@ -36,17 +36,23 @@ export default function AttentionGame({
   const [score, setScore] = useState(0);
   const [commissions, setCommissions] = useState(0);
   const [misses, setMisses] = useState(0);
-  const [totalShown, setTotalShown] = useState(0);
+  const [totalTargets, setTotalTargets] = useState(0);
+  const [totalDistractors, setTotalDistractors] = useState(0);
   const [tapFeedback, setTapFeedback] = useState<Record<number, "correct" | "wrong">>({});
 
   const itemIdRef = useRef(0);
-  const statsRef = useRef({ score: 0, commissions: 0, misses: 0, totalShown: 0 });
+  const statsRef = useRef({ score: 0, commissions: 0, misses: 0, totalTargets: 0, totalDistractors: 0 });
   const gameActiveRef = useRef(true);
+  const startTimeRef = useRef(Date.now());
+  const gridRef = useRef<(CellState | null)[]>(Array(GRID_SIZE * GRID_SIZE).fill(null));
 
-  // Keep statsRef in sync
   useEffect(() => {
-    statsRef.current = { score, commissions, misses, totalShown };
-  }, [score, commissions, misses, totalShown]);
+    statsRef.current = { score, commissions, misses, totalTargets, totalDistractors };
+  }, [score, commissions, misses, totalTargets, totalDistractors]);
+
+  useEffect(() => {
+    gridRef.current = grid;
+  }, [grid]);
 
   const handleCellTap = useCallback(
     (cellIndex: number) => {
@@ -81,7 +87,7 @@ export default function AttentionGame({
     [phase]
   );
 
-  // Countdown timer
+  // Countdown timer — on end, sweep remaining targets as misses
   useEffect(() => {
     if (phase !== "playing") return;
 
@@ -90,7 +96,18 @@ export default function AttentionGame({
         if (t <= 1) {
           clearInterval(interval);
           gameActiveRef.current = false;
-          // Brief delay before showing results
+
+          // Sweep remaining targets on grid as misses
+          const currentGrid = gridRef.current;
+          let remainingTargets = 0;
+          for (const cell of currentGrid) {
+            if (cell && cell.isTarget) remainingTargets++;
+          }
+          if (remainingTargets > 0) {
+            setMisses((m) => m + remainingTargets);
+          }
+          setGrid(Array(GRID_SIZE * GRID_SIZE).fill(null));
+
           setTimeout(() => setPhase("results"), 400);
           return 0;
         }
@@ -101,11 +118,11 @@ export default function AttentionGame({
     return () => clearInterval(interval);
   }, [phase]);
 
-  // Spawn items on the grid
+  // Spawn items — progressive difficulty via startTimeRef, not timeLeft
   useEffect(() => {
     if (phase !== "playing") return;
 
-    let currentInterval = INITIAL_INTERVAL;
+    startTimeRef.current = Date.now();
     let timeout: ReturnType<typeof setTimeout>;
 
     const spawnItem = () => {
@@ -132,9 +149,12 @@ export default function AttentionGame({
         const next = [...prev];
         next[cellIndex] = { emoji, isTarget: !isDistractor, id };
 
-        setTotalShown((t) => t + 1);
+        if (isDistractor) {
+          setTotalDistractors((d) => d + 1);
+        } else {
+          setTotalTargets((t) => t + 1);
+        }
 
-        // Auto-remove after display time (counts as miss if target)
         setTimeout(() => {
           if (!gameActiveRef.current) return;
           setGrid((current) => {
@@ -153,10 +173,9 @@ export default function AttentionGame({
         return next;
       });
 
-      // Speed up gradually
-      const elapsed = GAME_DURATION - timeLeft;
+      const elapsed = (Date.now() - startTimeRef.current) / 1000;
       const progress = Math.min(elapsed / GAME_DURATION, 1);
-      currentInterval =
+      const currentInterval =
         INITIAL_INTERVAL - progress * (INITIAL_INTERVAL - MIN_INTERVAL);
 
       timeout = setTimeout(spawnItem, currentInterval);
@@ -167,14 +186,17 @@ export default function AttentionGame({
     return () => {
       clearTimeout(timeout);
     };
-  }, [phase, config.targets, config.distractor, timeLeft]);
+  }, [phase, config.targets, config.distractor]);
 
-  // Calculate final results and call onComplete
   const handleFinish = useCallback(() => {
-    const { score: s, commissions: c, totalShown: t } = statsRef.current;
-    const accuracy = t > 0 ? s / t : 0;
-    const inhibition = t > 0 ? 1 - c / t : 1;
-    const adjustedScore = t > 0 ? Math.max(0, (s - c) / t) : 0;
+    const { score: s, commissions: c, misses: m, totalTargets: tt, totalDistractors: td } = statsRef.current;
+
+    const targetsShown = tt > 0 ? tt : 1;
+    const distractorsShown = td > 0 ? td : 1;
+
+    const accuracy = s / targetsShown;
+    const inhibition = 1 - c / distractorsShown;
+    const adjustedScore = Math.max(0, (s - c) / targetsShown);
 
     onComplete({
       questionId: `${themeId}-attention`,
@@ -188,14 +210,14 @@ export default function AttentionGame({
         { param: "ATT", metric: "inhibition", value: inhibition, weight: 0.7 },
         { param: "WM", metric: "adjustedScore", value: adjustedScore, weight: 0.5 },
       ],
-      rawMetrics: { correctTaps: s, commissions: c, misses: statsRef.current.misses, totalShown: t },
+      rawMetrics: { correctTaps: s, commissions: c, misses: m, totalTargets: tt, totalDistractors: td },
     });
   }, [themeId, onComplete]);
 
-  // Results view
   if (phase === "results") {
-    const total = statsRef.current.totalShown;
-    const accuracy = total > 0 ? statsRef.current.score / total : 0;
+    const { score: s, totalTargets: tt, misses: m, commissions: c } = statsRef.current;
+    const targetsShown = tt > 0 ? tt : 1;
+    const accuracy = s / targetsShown;
     const accuracyPct = Math.round(accuracy * 100);
 
     return (
@@ -210,21 +232,15 @@ export default function AttentionGame({
           <div className="space-y-2 text-sm text-gray-600">
             <div className="flex justify-between px-4">
               <span>Correct taps</span>
-              <span className="font-semibold text-emerald-600">
-                {statsRef.current.score}
-              </span>
+              <span className="font-semibold text-emerald-600">{s}</span>
             </div>
             <div className="flex justify-between px-4">
               <span>False taps</span>
-              <span className="font-semibold text-red-500">
-                {statsRef.current.commissions}
-              </span>
+              <span className="font-semibold text-red-500">{c}</span>
             </div>
             <div className="flex justify-between px-4">
               <span>Missed</span>
-              <span className="font-semibold text-amber-500">
-                {statsRef.current.misses}
-              </span>
+              <span className="font-semibold text-amber-500">{m}</span>
             </div>
             <div className="flex justify-between px-4 pt-2 border-t border-gray-100">
               <span>Accuracy</span>
@@ -242,12 +258,10 @@ export default function AttentionGame({
     );
   }
 
-  // Playing view
   const timerPct = (timeLeft / GAME_DURATION) * 100;
 
   return (
     <div className="min-h-[400px] bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-4 sm:p-6 flex flex-col gap-4">
-      {/* Header */}
       <div className="bg-white rounded-2xl shadow-xl p-4 space-y-3">
         <div className="flex items-center justify-between">
           <div>
@@ -266,7 +280,6 @@ export default function AttentionGame({
           </div>
         </div>
 
-        {/* Timer bar */}
         <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-1000 ease-linear ${
@@ -284,7 +297,6 @@ export default function AttentionGame({
         </div>
       </div>
 
-      {/* 4x4 Grid */}
       <div className="flex-1 flex items-center justify-center">
         <div className="grid grid-cols-4 gap-2 sm:gap-3 w-full max-w-[340px] aspect-square">
           {grid.map((cell, i) => {

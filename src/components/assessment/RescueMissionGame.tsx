@@ -164,7 +164,7 @@ export default function RescueMissionGame({ onComplete }: RescueMissionGameProps
       secondarySignal,
       indicators: [
         { param: "STR", metric: "strategyQuality", value: strategyQuality, weight: 1.0 },
-        { param: "STR", metric: "planSynergy", value: planSynergy, weight: 0.5 },
+        { param: "PAC", metric: "planSynergy", value: planSynergy, weight: 0.5 },
       ],
       rawMetrics: { slot1Signal: strategyQuality, slot2Signal: slot2 ? signalToValue(slot2.primarySignal) : 0 },
     };

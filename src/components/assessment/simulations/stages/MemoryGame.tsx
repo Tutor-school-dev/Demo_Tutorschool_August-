@@ -30,6 +30,7 @@ export default function MemoryGame({
   const [cellFeedback, setCellFeedback] = useState<Record<string, "correct" | "wrong">>({});
   const [roundFailed, setRoundFailed] = useState(false);
   const [consecutiveFailures, setConsecutiveFailures] = useState(0);
+  const [successfulRounds, setSuccessfulRounds] = useState(0);
 
   const lastTapTimeRef = useRef<number>(0);
   const gameOverRef = useRef(false);
@@ -108,6 +109,7 @@ export default function MemoryGame({
           // Round complete - update max span
           const newSpan = ROUNDS[round];
           setMaxSpan((prev) => Math.max(prev, newSpan));
+          setSuccessfulRounds((s) => s + 1);
           setConsecutiveFailures(0);
 
           if (round >= ROUNDS.length - 1) {
@@ -144,7 +146,7 @@ export default function MemoryGame({
           setCellFeedback({});
 
           // End game early if failed on rounds 1 or 2 (consecutive early failures)
-          if (round <= 1 && failures >= 1) {
+          if (round <= 1 && failures >= 2) {
             gameOverRef.current = true;
             setPhase("results");
             return;
@@ -182,8 +184,7 @@ export default function MemoryGame({
   // Calculate and submit results
   const handleFinish = useCallback(() => {
     const spanNorm = Math.min(maxSpan / 6, 1.0);
-    const roundsCompleted = round + (roundFailed ? 0 : 1);
-    const roundCompletion = roundsCompleted / ROUNDS.length;
+    const roundCompletion = successfulRounds / ROUNDS.length;
     const avgRt =
       reactionTimes.length > 0
         ? reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length
@@ -202,9 +203,9 @@ export default function MemoryGame({
         { param: "WM", metric: "roundCompletion", value: roundCompletion, weight: 0.6 },
         { param: "ATT", metric: "recallSpeed", value: recallSpeed, weight: 0.5 },
       ],
-      rawMetrics: { maxSpan, roundsCompleted, avgReactionTimeMs: avgRt === Infinity ? -1 : Math.round(avgRt) },
+      rawMetrics: { maxSpan, roundsCompleted: successfulRounds, avgReactionTimeMs: avgRt === Infinity ? -1 : Math.round(avgRt) },
     });
-  }, [themeId, maxSpan, round, roundFailed, reactionTimes, onComplete]);
+  }, [themeId, maxSpan, successfulRounds, reactionTimes, onComplete]);
 
   // Results view
   if (phase === "results") {
@@ -230,7 +231,7 @@ export default function MemoryGame({
             <div className="flex justify-between px-4">
               <span>Rounds completed</span>
               <span className="font-semibold text-emerald-600">
-                {round + (roundFailed ? 0 : 1)} / {ROUNDS.length}
+                {successfulRounds} / {ROUNDS.length}
               </span>
             </div>
             <div className="flex justify-between px-4 pt-2 border-t border-gray-100">
