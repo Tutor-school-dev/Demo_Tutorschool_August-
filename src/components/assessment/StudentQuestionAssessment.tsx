@@ -7,6 +7,7 @@ import RescueMissionGame from "./RescueMissionGame";
 import SimulationSelector from "./simulations/SimulationSelector";
 import SimulationFlow from "./simulations/SimulationFlow";
 import { SimulationTheme } from "./simulations/themes";
+import Grade68SimulationFlow from "./grade68/Grade68SimulationFlow";
 
 type Phase = "rescue" | "select" | "simulation";
 
@@ -22,6 +23,18 @@ export default function StudentQuestionAssessment() {
   }, []);
 
   if (grade === null) return null;
+
+  if (grade === "Grade 6-8") {
+    return (
+      <Grade68SimulationFlow
+        onComplete={(allAnswers) => {
+          const scores = computeScores(allAnswers);
+          localStorage.setItem("assessment_scores", JSON.stringify(scores));
+          router.push("/dashboard/student");
+        }}
+      />
+    );
+  }
 
   if (grade !== "Grade 4-5") {
     return (
