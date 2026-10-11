@@ -25,9 +25,9 @@ const PRIORITY_OPTIONS = [
 ];
 
 const COMBINED_CATEGORIES: Category[] = [
-  { key: "keynote_combined", label: "Keynote + Quiz (combined)", emoji: "\u{1F399}️", min: 5 },
-  { key: "robotics_coding", label: "Robotics/Coding (pick one)", emoji: "\u{1F916}", min: 5 },
-  { key: "exhibit", label: "Innovation Exhibit", emoji: "\u{1F4A1}", min: 5 },
+  { key: "keynote_combined", label: "Keynote + Quiz (combined)", emoji: "🎙️", min: 5 },
+  { key: "robotics_coding", label: "Robotics/Coding (pick one)", emoji: "🤖", min: 5 },
+  { key: "exhibit", label: "Innovation Exhibit", emoji: "💡", min: 5 },
 ];
 
 export default function SimultaneousChanges({ onComplete }: SimultaneousChangesProps) {
@@ -116,7 +116,7 @@ export default function SimultaneousChanges({ onComplete }: SimultaneousChangesP
       <div className="space-y-3">
         <div className="bg-red-50 border border-red-200 rounded-xl p-4">
           <h3 className="font-bold text-red-800 text-sm">
-            {"\u{1F3DB}️"} Auditorium Capacity Reduced
+            {"🏛️"} Auditorium Capacity Reduced
           </h3>
           <p className="text-sm text-red-700 mt-1">
             Half the seating is blocked for safety inspection. Capacity drops from{" "}
@@ -125,7 +125,7 @@ export default function SimultaneousChanges({ onComplete }: SimultaneousChangesP
         </div>
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
           <h3 className="font-bold text-amber-800 text-sm">
-            {"\u{1F4C5}"} Day 3 Cancelled
+            {"📅"} Day 3 Cancelled
           </h3>
           <p className="text-sm text-amber-700 mt-1">
             A school inspection has been scheduled on Day 3. Innovation Week is now{" "}

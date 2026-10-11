@@ -14,28 +14,28 @@ const CLASS_SIZE_PANELS = [
   {
     id: "survey_cs",
     title: "National Survey",
-    icon: "\u{1F4CA}",
+    icon: "📊",
     summary: "50,000 students across 200 schools",
     detail: "Students in classes under 25 scored 8% higher on standardized tests than those in classes over 35. The survey covered urban and rural schools. However, it did not control for school funding levels — wealthier schools tend to have both smaller classes and better resources.",
   },
   {
     id: "rct_cs",
     title: "Tennessee STAR Experiment",
-    icon: "\u{1F9EA}",
+    icon: "🧪",
     summary: "Randomized controlled trial",
     detail: "Students were randomly assigned to small (15 students) or regular (25 students) classes in grades K–3. Small-class students gained 0.2 standard deviations on test scores. Effect was strongest for low-income students. Limitation: Only studied grades K–3 — results may not apply to high school.",
   },
   {
     id: "methods_cs",
     title: "Methodology Comparison",
-    icon: "\u{1F50E}",
+    icon: "🔎",
     summary: "Evaluating the evidence quality",
     detail: "The national survey is observational — it can't prove small classes CAUSE better performance (confounding variables). The STAR experiment is the gold standard (RCT) but was limited to young children. A key confound in the survey: schools with small classes also had 40% higher per-student spending.",
   },
   {
     id: "meta_cs",
     title: "Meta-Analysis",
-    icon: "\u{1F4DA}",
+    icon: "📚",
     summary: "12 studies synthesized",
     detail: "Effect size ranges from 0.0 to 0.4 depending on grade level, subject, and teacher quality. The effect is strongest in early grades and for disadvantaged students. For grades 9–10, the effect is near zero unless accompanied by teacher training.",
   },
@@ -98,7 +98,7 @@ export default function TransferDomain({ onComplete }: Props) {
       </div>
 
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
-        <h3 className="font-bold text-amber-800">{"\u{1F3EB}"} Class Size Debate</h3>
+        <h3 className="font-bold text-amber-800">{"🏫"} Class Size Debate</h3>
         <p className="text-sm text-amber-700 leading-relaxed">
           A school board is debating whether to spend their budget on hiring more teachers to reduce class sizes.
           They&apos;ve asked for your evidence review.

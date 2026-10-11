@@ -15,10 +15,10 @@ export interface SimulationMeta {
 }
 
 export const GRADE910_SIMULATIONS: SimulationMeta[] = [
-  { id: "exam-strategy", name: "Exam Strategy Lab", emoji: "\u{1F4DD}", tagline: "Plan and adapt under exam pressure", stageCount: 3 },
-  { id: "research-evidence", name: "Research Evidence Lab", emoji: "\u{1F50D}", tagline: "Investigate a claim with conflicting evidence", stageCount: 3 },
-  { id: "project-crisis", name: "Project Crisis Room", emoji: "\u{1F6A7}", tagline: "Manage a team project under changing constraints", stageCount: 3 },
-  { id: "system-resource", name: "System & Resource Control", emoji: "\u{1F4CB}", tagline: "Plan an event with distributed constraints", stageCount: 3 },
+  { id: "exam-strategy", name: "Exam Strategy Lab", emoji: "📝", tagline: "Plan and adapt under exam pressure", stageCount: 3 },
+  { id: "research-evidence", name: "Research Evidence Lab", emoji: "🔍", tagline: "Investigate a claim with conflicting evidence", stageCount: 3 },
+  { id: "project-crisis", name: "Project Crisis Room", emoji: "🚧", tagline: "Manage a team project under changing constraints", stageCount: 3 },
+  { id: "system-resource", name: "System & Resource Control", emoji: "📋", tagline: "Plan an event with distributed constraints", stageCount: 3 },
   { id: "decision-room", name: "Decision Room", emoji: "⚖️", tagline: "Decide with incomplete and conflicting information", stageCount: 3 },
 ];
 

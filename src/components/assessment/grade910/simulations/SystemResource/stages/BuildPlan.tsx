@@ -15,7 +15,7 @@ const INFO_PANELS = [
   {
     id: "venue_a",
     title: "Auditorium",
-    icon: "\u{1F3DB}️",
+    icon: "🏛️",
     summary: "Capacity 200, Days 1-3",
     detail:
       "Available all 3 days. Requires sound system rental (₹10,000). Ideal for talks and large demos. The auditorium has fixed seating — not suitable for hands-on workshops.",
@@ -23,7 +23,7 @@ const INFO_PANELS = [
   {
     id: "venue_b",
     title: "Science Lab",
-    icon: "\u{1F9EA}",
+    icon: "🧪",
     summary: "Capacity 40, Days 1-2 only",
     detail:
       "Available Day 1 and Day 2 only (Day 3: blocked for exams). Lab equipment already available. Ideal for workshops and experiments. Cannot be used for large gatherings.",
@@ -31,7 +31,7 @@ const INFO_PANELS = [
   {
     id: "venue_c",
     title: "Sports Ground",
-    icon: "\u{1F3DF}️",
+    icon: "🏟️",
     summary: "Capacity 500, Days 2-3",
     detail:
       "Available Day 2 and Day 3 (Day 1: forecast rain). Requires tent rental (₹15,000). Ideal for exhibits and competitions. Open-air — weather dependent.",
@@ -39,7 +39,7 @@ const INFO_PANELS = [
   {
     id: "activities",
     title: "Activity Requirements",
-    icon: "\u{1F4CC}",
+    icon: "📌",
     summary: "5 activities to schedule",
     detail:
       "(1) Keynote Talk: Needs large venue, 1 volunteer. (2) Robotics Workshop: Needs lab equipment, 3 volunteers. (3) Science Quiz: Any venue, 2 volunteers. (4) Innovation Exhibit: Needs large space, 2 volunteers. (5) Coding Challenge: Needs computers or lab, 2 volunteers.",
@@ -47,7 +47,7 @@ const INFO_PANELS = [
   {
     id: "volunteers",
     title: "Volunteer Constraints",
-    icon: "\u{1F64B}",
+    icon: "🙋",
     summary: "8 volunteers, max 3 per activity",
     detail:
       "8 student volunteers available. Each can work 1 activity per day. Some activities need 2-3 volunteers. Total volunteer-slots needed: 1+3+2+2+2 = 10. With 8 volunteers across 3 days = 24 person-days available. But no volunteer can be in two places at once on the same day.",
@@ -55,7 +55,7 @@ const INFO_PANELS = [
   {
     id: "sponsor",
     title: "Sponsor Requirements",
-    icon: "\u{1F4B0}",
+    icon: "💰",
     summary: "Optional: Funding depends on attendance",
     detail:
       "TechCorp sponsor contributes ₹20,000 IF their logo is prominently displayed at the highest-attendance event. If the largest event draws fewer than 100 attendees, TechCorp may withdraw funding. This would reduce your budget to ₹55,000.",
@@ -63,11 +63,11 @@ const INFO_PANELS = [
 ];
 
 const BUDGET_CATEGORIES: Category[] = [
-  { key: "keynote", label: "Keynote Talk", emoji: "\u{1F399}️", min: 5 },
-  { key: "robotics", label: "Robotics Workshop", emoji: "\u{1F916}", min: 5 },
-  { key: "quiz", label: "Science Quiz", emoji: "\u{2753}", min: 3 },
-  { key: "exhibit", label: "Innovation Exhibit", emoji: "\u{1F4A1}", min: 5 },
-  { key: "coding", label: "Coding Challenge", emoji: "\u{1F4BB}", min: 3 },
+  { key: "keynote", label: "Keynote Talk", emoji: "🎙️", min: 5 },
+  { key: "robotics", label: "Robotics Workshop", emoji: "🤖", min: 5 },
+  { key: "quiz", label: "Science Quiz", emoji: "❓", min: 3 },
+  { key: "exhibit", label: "Innovation Exhibit", emoji: "💡", min: 5 },
+  { key: "coding", label: "Coding Challenge", emoji: "💻", min: 3 },
 ];
 
 const PRIME_OPTIONS = [

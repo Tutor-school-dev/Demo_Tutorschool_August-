@@ -16,7 +16,7 @@ const ALT_PANELS = [
   {
     id: "computer_room",
     title: "Alternative: Computer Room",
-    icon: "\u{1F4BB}",
+    icon: "💻",
     summary: "Capacity 30, Available Days 1-3",
     detail:
       "Has 30 desktop computers with internet. No lab equipment. Setup cost: ₹5,000. Good for the Coding Challenge. Not ideal for Robotics Workshop (no physical workspace).",
@@ -24,7 +24,7 @@ const ALT_PANELS = [
   {
     id: "classroom",
     title: "Alternative: Classroom Block",
-    icon: "\u{1F3EB}",
+    icon: "🏫",
     summary: "Capacity 60 per room, 3 rooms",
     detail:
       "Three empty classrooms available all 3 days. No special equipment but tables can be rearranged. Cost: ₹2,000 per room. Could work for Robotics Workshop with portable equipment (₹4,000 additional).",
@@ -44,11 +44,11 @@ const CODING_OPTIONS = [
 ];
 
 const REALLOC_CATEGORIES: Category[] = [
-  { key: "keynote", label: "Keynote Talk", emoji: "\u{1F399}️", min: 0 },
-  { key: "robotics", label: "Robotics Workshop", emoji: "\u{1F916}", min: 0 },
-  { key: "quiz", label: "Science Quiz", emoji: "\u{2753}", min: 0 },
-  { key: "exhibit", label: "Innovation Exhibit", emoji: "\u{1F4A1}", min: 0 },
-  { key: "coding", label: "Coding Challenge", emoji: "\u{1F4BB}", min: 0 },
+  { key: "keynote", label: "Keynote Talk", emoji: "🎙️", min: 0 },
+  { key: "robotics", label: "Robotics Workshop", emoji: "🤖", min: 0 },
+  { key: "quiz", label: "Science Quiz", emoji: "❓", min: 0 },
+  { key: "exhibit", label: "Innovation Exhibit", emoji: "💡", min: 0 },
+  { key: "coding", label: "Coding Challenge", emoji: "💻", min: 0 },
 ];
 
 export default function ResourceFailure({ budgetAllocation, onComplete }: ResourceFailureProps) {
@@ -137,7 +137,7 @@ export default function ResourceFailure({ budgetAllocation, onComplete }: Resour
 
       <div className="bg-red-50 border border-red-200 rounded-xl p-4">
         <h3 className="font-bold text-red-800 text-base">
-          {"\u{1F6A8}"} Emergency: Science Lab Closed
+          {"🚨"} Emergency: Science Lab Closed
         </h3>
         <p className="text-sm text-red-700 mt-1">
           The Science Lab has a burst water pipe and is closed for repairs. The{" "}
@@ -186,7 +186,7 @@ export default function ResourceFailure({ budgetAllocation, onComplete }: Resour
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
         <h4 className="text-sm font-semibold text-gray-600 mb-3">
-          {"\u{1F916}"} Reassign Robotics Workshop
+          {"🤖"} Reassign Robotics Workshop
         </h4>
         <div className="space-y-2">
           {ROBOTICS_OPTIONS.map((opt) => (
@@ -214,7 +214,7 @@ export default function ResourceFailure({ budgetAllocation, onComplete }: Resour
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
         <h4 className="text-sm font-semibold text-gray-600 mb-3">
-          {"\u{1F4BB}"} Reassign Coding Challenge
+          {"💻"} Reassign Coding Challenge
         </h4>
         <div className="space-y-2">
           {CODING_OPTIONS.map((opt) => (
@@ -243,7 +243,7 @@ export default function ResourceFailure({ budgetAllocation, onComplete }: Resour
       {hasConflict && (
         <div className="bg-amber-50 border border-amber-300 rounded-xl p-4">
           <p className="text-sm text-amber-800 font-medium">
-            {"\u{26A0}️"} Both activities can&apos;t use the Computer Room on the same
+            {"⚠️"} Both activities can&apos;t use the Computer Room on the same
             day. Assign them to different days or pick a different venue for one.
           </p>
         </div>

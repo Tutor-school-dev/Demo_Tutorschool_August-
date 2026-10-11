@@ -46,7 +46,7 @@ export default function SystemResourceSimulation({ onComplete }: Props) {
     case "intro1":
       return (
         <NarrativeScreen
-          emoji={"\u{1F4CB}"}
+          emoji={"📋"}
           title="System & Resource Control"
           narrative="You're the lead organizer for your school's Innovation Week — a 3-day event with talks, workshops, exhibits, and competitions. Budget is tight, venues are limited, and volunteers are scarce. Plan wisely!"
           buttonLabel="See the Brief"
@@ -58,7 +58,7 @@ export default function SystemResourceSimulation({ onComplete }: Props) {
     case "intro2":
       return (
         <NarrativeScreen
-          emoji={"\u{1F6A8}"}
+          emoji={"🚨"}
           title="Resource Emergency"
           narrative="A critical venue just became unavailable. Two activities are now without a home. You need to rearrange the plan while keeping everything else on track."
           buttonLabel="Assess Options"
@@ -70,7 +70,7 @@ export default function SystemResourceSimulation({ onComplete }: Props) {
     case "intro3":
       return (
         <NarrativeScreen
-          emoji={"\u{26A1}"}
+          emoji={"⚡"}
           title="Double Disruption"
           narrative="Two problems hit at the same time: a venue shrank AND the schedule shortened. Handle the overload."
           buttonLabel="Manage the Crisis"

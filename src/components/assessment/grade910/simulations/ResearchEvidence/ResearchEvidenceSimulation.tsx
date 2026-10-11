@@ -40,7 +40,7 @@ export default function ResearchEvidenceSimulation({ onComplete }: Props) {
     case "intro1":
       return (
         <NarrativeScreen
-          emoji="\u{1F50D}"
+          emoji="🔍"
           title="Research Evidence Lab"
           narrative="Does playing video games for more than 2 hours daily harm academic performance? You'll investigate this claim using real research studies, statistics, and expert opinions. Examine the evidence carefully before forming your conclusion."
           buttonLabel="Begin Investigation"
@@ -52,7 +52,7 @@ export default function ResearchEvidenceSimulation({ onComplete }: Props) {
     case "intro2":
       return (
         <NarrativeScreen
-          emoji="\u{1F4E2}"
+          emoji="📢"
           title="New Evidence Arrives"
           narrative="A major new study has just been published that may change everything. The evidence might conflict with what you concluded. Science is about updating beliefs when new data arrives."
           buttonLabel="Review New Evidence"
@@ -64,7 +64,7 @@ export default function ResearchEvidenceSimulation({ onComplete }: Props) {
     case "intro3":
       return (
         <NarrativeScreen
-          emoji="\u{1F500}"
+          emoji="🔀"
           title="A Different Question"
           narrative="A different debate needs your analytical thinking. Can you apply what you've learned about evaluating evidence to a new topic?"
           buttonLabel="Investigate"

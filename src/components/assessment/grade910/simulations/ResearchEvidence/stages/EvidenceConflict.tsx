@@ -13,22 +13,22 @@ interface Props {
 
 const CONTRADICTIONS: Record<string, { title: string; body: string; methodology: string }> = {
   complex_relationship: {
-    title: "\u{1F4D1} New Large-Scale RCT Published",
+    title: "📑 New Large-Scale RCT Published",
     body: "A new randomized controlled trial with 5,000 students across 50 schools found NO statistically significant relationship between gaming hours and academic performance (p=0.72, effect size d=0.02). The study controlled for socioeconomic status, sleep, parental involvement, and game type. Lead researcher: 'Once you control for confounding variables, the gaming-grades connection essentially disappears.'",
     methodology: "Double-blind RCT. Students' actual gaming tracked via app monitoring (not self-reported). Academic scores from official school records. Pre-registered analysis plan. Limitations: Only tracked students aged 14–16 in urban schools.",
   },
   insufficient_evidence: {
-    title: "\u{1F4D1} Landmark Longitudinal Study Released",
+    title: "📑 Landmark Longitudinal Study Released",
     body: "A 3-year longitudinal study tracking 8,000 students found those gaming >2 hrs/day showed 15% lower GPA growth compared to non-gamers (p=0.001, controlled for income and prior grades). The effect was consistent across all game types. This is the largest and most rigorous study on the topic to date.",
     methodology: "Longitudinal cohort study. Gaming tracked via weekly surveys cross-validated with screen-time apps. GPA from school records. Controlled for 12 confounding variables. Limitations: Observational, not experimental — cannot prove causation.",
   },
   gaming_harms: {
-    title: "\u{1F4D1} New Large-Scale RCT Published",
+    title: "📑 New Large-Scale RCT Published",
     body: "A new randomized controlled trial with 5,000 students found NO significant link between gaming hours and grades once confounding variables were controlled. The lead researcher stated: 'Previous survey studies, including the Oxford one, likely measured the effect of poverty and home environment, not gaming itself.'",
     methodology: "Double-blind RCT. Students' actual gaming tracked via app monitoring (not self-reported). Academic scores from official school records. Pre-registered analysis plan. Limitations: Only tracked students aged 14–16 in urban schools.",
   },
   no_effect: {
-    title: "\u{1F4D1} Landmark Longitudinal Study Released",
+    title: "📑 Landmark Longitudinal Study Released",
     body: "A 3-year study tracking 8,000 students found a consistent 15% GPA growth disadvantage for heavy gamers (>2 hrs/day). Unlike the small lab experiment, this real-world study captured long-term effects that short experiments miss.",
     methodology: "Longitudinal cohort study. Gaming tracked via weekly surveys cross-validated with screen-time apps. GPA from school records. Controlled for 12 confounding variables. Limitations: Observational, not experimental — cannot prove causation.",
   },
@@ -109,7 +109,7 @@ export default function EvidenceConflict({ interpretation, onComplete }: Props) 
       <InfoPanel
         id="new_methodology"
         title="Study Methodology"
-        icon="\u{1F50E}"
+        icon="🔎"
         summary="How was this study conducted?"
         detail={contradiction.methodology}
         onToggle={tracker.toggle}
