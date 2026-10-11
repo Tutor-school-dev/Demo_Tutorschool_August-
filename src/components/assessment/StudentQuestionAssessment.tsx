@@ -8,6 +8,7 @@ import SimulationSelector from "./simulations/SimulationSelector";
 import SimulationFlow from "./simulations/SimulationFlow";
 import { SimulationTheme } from "./simulations/themes";
 import Grade68SimulationFlow from "./grade68/Grade68SimulationFlow";
+import Grade910SimulationFlow from "./grade910/Grade910SimulationFlow";
 
 type Phase = "rescue" | "select" | "simulation";
 
@@ -27,6 +28,18 @@ export default function StudentQuestionAssessment() {
   if (grade === "Grade 6-8") {
     return (
       <Grade68SimulationFlow
+        onComplete={(allAnswers) => {
+          const scores = computeScores(allAnswers);
+          localStorage.setItem("assessment_scores", JSON.stringify(scores));
+          router.push("/dashboard/student");
+        }}
+      />
+    );
+  }
+
+  if (grade === "Grade 9-10") {
+    return (
+      <Grade910SimulationFlow
         onComplete={(allAnswers) => {
           const scores = computeScores(allAnswers);
           localStorage.setItem("assessment_scores", JSON.stringify(scores));
